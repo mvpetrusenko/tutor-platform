@@ -1,0 +1,342 @@
+// Materials Management
+const materials = {
+    photos: JSON.parse(localStorage.getItem('materialsPhotos') || '[]'),
+    texts: JSON.parse(localStorage.getItem('materialsTexts') || '[]'),
+    exercises: JSON.parse(localStorage.getItem('materialsExercises') || '[]'),
+    homework: JSON.parse(localStorage.getItem('materialsHomework') || '[]')
+};
+
+function getMaterials() {
+    return {
+        photos: JSON.parse(localStorage.getItem('materialsPhotos') || '[]'),
+        texts: JSON.parse(localStorage.getItem('materialsTexts') || '[]'),
+        exercises: JSON.parse(localStorage.getItem('materialsExercises') || '[]'),
+        homework: JSON.parse(localStorage.getItem('materialsHomework') || '[]')
+    };
+}
+
+// Save materials to localStorage
+function saveMaterials() {
+    localStorage.setItem('materialsPhotos', JSON.stringify(materials.photos));
+    localStorage.setItem('materialsTexts', JSON.stringify(materials.texts));
+    localStorage.setItem('materialsExercises', JSON.stringify(materials.exercises));
+    localStorage.setItem('materialsHomework', JSON.stringify(materials.homework));
+}
+
+// Reload materials from localStorage
+function reloadMaterials() {
+    materials.photos = JSON.parse(localStorage.getItem('materialsPhotos') || '[]');
+    materials.texts = JSON.parse(localStorage.getItem('materialsTexts') || '[]');
+    materials.exercises = JSON.parse(localStorage.getItem('materialsExercises') || '[]');
+    materials.homework = JSON.parse(localStorage.getItem('materialsHomework') || '[]');
+}
+
+// Modern Alert System (same as whiteboard)
+function showAlert(type, title, message, onConfirm = null) {
+    const container = document.getElementById('alertContainer');
+    if (!container) return;
+
+    const alert = document.createElement('div');
+    alert.className = `alert ${type}`;
+
+    const icons = {
+        success: '✅',
+        info: 'ℹ️',
+        warning: '⚠️',
+        error: '❌'
+    };
+
+    alert.innerHTML = `
+        <span class="alert-icon">${icons[type] || icons.info}</span>
+        <div class="alert-content">
+            <h4 class="alert-title">${title}</h4>
+            <p class="alert-message">${message}</p>
+        </div>
+        <button class="alert-close" aria-label="Close">×</button>
+    `;
+
+    container.appendChild(alert);
+
+    // Close button
+    const closeBtn = alert.querySelector('.alert-close');
+    closeBtn.addEventListener('click', () => {
+        removeAlert(alert);
+    });
+
+    // Auto-remove after 4 seconds (or 6 seconds for warnings with confirm)
+    const autoRemove = setTimeout(() => {
+        removeAlert(alert);
+    }, onConfirm ? 6000 : 4000);
+
+    // If there's a confirm action, add confirm button
+    if (onConfirm) {
+        const confirmBtn = document.createElement('button');
+        confirmBtn.textContent = 'Confirm';
+        confirmBtn.style.cssText = `
+            margin-top: 8px;
+            padding: 6px 16px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        `;
+        confirmBtn.onmouseover = () => {
+            confirmBtn.style.transform = 'scale(1.05)';
+            confirmBtn.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+        };
+        confirmBtn.onmouseout = () => {
+            confirmBtn.style.transform = 'scale(1)';
+            confirmBtn.style.boxShadow = 'none';
+        };
+        confirmBtn.addEventListener('click', () => {
+            clearTimeout(autoRemove);
+            removeAlert(alert);
+            onConfirm();
+        });
+        alert.querySelector('.alert-content').appendChild(confirmBtn);
+    }
+
+    // Remove on click outside (for warnings)
+    if (onConfirm) {
+        const clickHandler = (e) => {
+            if (!alert.contains(e.target)) {
+                clearTimeout(autoRemove);
+                removeAlert(alert);
+                document.removeEventListener('click', clickHandler);
+            }
+        };
+        setTimeout(() => document.addEventListener('click', clickHandler), 100);
+    }
+}
+
+function removeAlert(alert) {
+    alert.classList.add('hiding');
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.parentNode.removeChild(alert);
+        }
+    }, 300);
+}
+
+// Handle photo upload
+document.getElementById('materialPhotoUpload').addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const material = {
+                    id: Date.now() + Math.random(),
+                    name: file.name,
+                    data: event.target.result,
+                    type: 'image',
+                    date: new Date().toLocaleDateString()
+                };
+                materials.photos.push(material);
+                saveMaterials();
+                displayMaterials();
+                showAlert('success', 'Saved', `Photo "${file.name}" uploaded and saved successfully!`);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    e.target.value = '';
+});
+
+// Handle text upload
+document.getElementById('materialTextUpload').addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const material = {
+                id: Date.now() + Math.random(),
+                name: file.name,
+                data: event.target.result,
+                type: 'text',
+                date: new Date().toLocaleDateString()
+            };
+            materials.texts.push(material);
+            saveMaterials();
+            displayMaterials();
+            showAlert('success', 'Saved', `Text "${file.name}" uploaded and saved successfully!`);
+        };
+        reader.readAsDataURL(file);
+    });
+    e.target.value = '';
+});
+
+// Handle exercise upload
+document.getElementById('materialExerciseUpload').addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const material = {
+                id: Date.now() + Math.random(),
+                name: file.name,
+                data: event.target.result,
+                type: 'exercise',
+                date: new Date().toLocaleDateString()
+            };
+            materials.exercises.push(material);
+            saveMaterials();
+            displayMaterials();
+            showAlert('success', 'Saved', `Exercise "${file.name}" uploaded and saved successfully!`);
+        };
+        reader.readAsDataURL(file);
+    });
+    e.target.value = '';
+});
+
+// Handle homework upload
+document.getElementById('materialHomeworkUpload').addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const material = {
+                id: Date.now() + Math.random(),
+                name: file.name,
+                data: event.target.result,
+                type: 'homework',
+                date: new Date().toLocaleDateString()
+            };
+            materials.homework.push(material);
+            saveMaterials();
+            displayMaterials();
+            showAlert('success', 'Saved', `Homework "${file.name}" uploaded and saved successfully!`);
+        };
+        reader.readAsDataURL(file);
+    });
+    e.target.value = '';
+});
+
+// Display materials
+function displayMaterials() {
+    displayMaterialCategory('photos', materials.photos, document.getElementById('photosGrid'));
+    displayMaterialCategory('texts', materials.texts, document.getElementById('textsGrid'));
+    displayMaterialCategory('exercises', materials.exercises, document.getElementById('exercisesGrid'));
+    displayMaterialCategory('homework', materials.homework, document.getElementById('homeworkGrid'));
+}
+
+function displayMaterialCategory(type, items, container) {
+    container.innerHTML = '';
+
+    if (items.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <p>No ${type} uploaded yet</p>
+            </div>
+        `;
+        return;
+    }
+
+    items.forEach(item => {
+        const materialCard = document.createElement('div');
+        materialCard.className = 'material-item';
+        materialCard.dataset.id = item.id;
+        materialCard.dataset.type = type;
+
+        if (type === 'photos' && item.type === 'image') {
+            materialCard.innerHTML = `
+                <div class="material-item-actions">
+                    <button class="material-action-btn delete-btn" title="Delete" data-id="${item.id}" data-type="${type}">🗑️</button>
+                </div>
+                <img src="${item.data}" alt="${item.name}" class="material-item-image">
+                <h4 class="material-item-name">${item.name}</h4>
+                <p class="material-item-date">${item.date}</p>
+            `;
+        } else {
+            const icons = {
+                texts: '📄',
+                exercises: '✏️',
+                homework: '📚'
+            };
+            materialCard.innerHTML = `
+                <div class="material-item-actions">
+                    <button class="material-action-btn delete-btn" title="Delete" data-id="${item.id}" data-type="${type}">🗑️</button>
+                </div>
+                <div class="material-item-icon">${icons[type] || '📄'}</div>
+                <h4 class="material-item-name">${item.name}</h4>
+                <p class="material-item-date">${item.date}</p>
+            `;
+        }
+
+        container.appendChild(materialCard);
+    });
+
+    // Add delete functionality
+    container.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = btn.dataset.id;
+            const type = btn.dataset.type;
+            deleteMaterial(type, id);
+        });
+    });
+}
+
+// Delete material
+function deleteMaterial(type, id) {
+    showAlert('warning', 'Delete Material', 'Are you sure you want to delete this material? This will also remove it from any selected materials on the home page.', () => {
+        // Convert id to number for comparison
+        const materialId = parseFloat(id);
+
+        // Remove from materials array
+        const initialLength = materials[type].length;
+        materials[type] = materials[type].filter(item => {
+            const itemId = parseFloat(item.id);
+            return itemId !== materialId;
+        });
+
+        // If no item was removed, try string comparison
+        if (materials[type].length === initialLength) {
+            materials[type] = materials[type].filter(item => String(item.id) !== String(id));
+        }
+
+        // Save to localStorage
+        saveMaterials();
+
+        // Reload materials to ensure sync
+        materials.photos = JSON.parse(localStorage.getItem('materialsPhotos') || '[]');
+        materials.texts = JSON.parse(localStorage.getItem('materialsTexts') || '[]');
+        materials.exercises = JSON.parse(localStorage.getItem('materialsExercises') || '[]');
+        materials.homework = JSON.parse(localStorage.getItem('materialsHomework') || '[]');
+
+        // Refresh display
+        displayMaterials();
+
+        // Also remove from selected materials on home page (check all selected arrays)
+        const typeMap = {
+            photos: 'Photo',
+            texts: 'Text',
+            exercises: 'Exercise',
+            homework: 'Homework'
+        };
+        const selectedKey = `selected${typeMap[type]}s`;
+        const selected = localStorage.getItem(selectedKey);
+        if (selected) {
+            try {
+                const selectedMaterials = JSON.parse(selected);
+                const updated = selectedMaterials.filter(item => {
+                    const itemId = parseFloat(item.id);
+                    return itemId !== materialId && String(item.id) !== String(id);
+                });
+                localStorage.setItem(selectedKey, JSON.stringify(updated));
+            } catch (e) {
+                console.error('Error updating selected materials:', e);
+            }
+        }
+
+        showAlert('success', 'Deleted', 'Material deleted successfully!');
+    });
+}
+
+// Initialize display
+displayMaterials();

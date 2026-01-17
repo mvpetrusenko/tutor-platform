@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materials - Tutoring Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="materials.css">
+</head>
+<body data-theme="light">
+    <!-- Animated Background Elements -->
+    <div class="bg-animation" id="bgAnimation" data-animation="none">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="light light-yellow light-1"></div>
+        <div class="light light-pink light-2"></div>
+        <div class="light light-violet light-3"></div>
+        <div class="light light-white light-4"></div>
+        <div class="light light-yellow light-5"></div>
+        <div class="light light-pink light-6"></div>
+        <div class="light light-violet light-7"></div>
+        <div class="light light-white light-8"></div>
+        <div class="light light-yellow light-9"></div>
+        <div class="light light-pink light-10"></div>
+        <div class="light light-violet light-11"></div>
+        <div class="light light-white light-12"></div>
+        <div class="light light-yellow light-13"></div>
+        <div class="light light-white light-14"></div>
+        <div class="light light-yellow light-15"></div>
+        <div class="light light-white light-16"></div>
+        <div class="light light-yellow light-17"></div>
+        <div class="light light-white light-18"></div>
+        <div class="light light-yellow light-19"></div>
+        <div class="light light-white light-20"></div>
+        <div class="light light-pink light-21"></div>
+        <div class="light light-violet light-22"></div>
+        <div class="light light-yellow light-23"></div>
+        <div class="light light-white light-24"></div>
+        <div class="wave-element wave-1"></div>
+        <div class="wave-element wave-2"></div>
+        <div class="wave-element wave-3"></div>
+        <div class="rabbit rabbit-1">🐰</div>
+        <div class="rabbit rabbit-2">🐰</div>
+        <div class="rabbit rabbit-3">🐰</div>
+        <div class="rabbit rabbit-4">🐰</div>
+        <div class="rabbit rabbit-5">🐰</div>
+        <div class="rabbit rabbit-6">🐰</div>
+        <div class="rabbit rabbit-7">🐰</div>
+        <div class="rabbit rabbit-8">🐰</div>
+        <div class="rabbit rabbit-9">🐰</div>
+        <div class="rabbit rabbit-10">🐰</div>
+        <div class="rabbit rabbit-11">🐰</div>
+        <div class="rabbit rabbit-12">🐰</div>
+        <div class="rabbit rabbit-13">🐰</div>
+        <div class="rabbit rabbit-14">🐰</div>
+        <div class="rabbit rabbit-15">🐰</div>
+        <div class="rabbit rabbit-16">🐰</div>
+        <div class="rabbit rabbit-17">🐰</div>
+        <div class="rabbit rabbit-18">🐰</div>
+        <div class="rabbit rabbit-19">🐰</div>
+        <div class="rabbit rabbit-20">🐰</div>
+        <div class="carrot carrot-1">🥕</div>
+        <div class="carrot carrot-2">🥕</div>
+        <div class="carrot carrot-3">🥕</div>
+        <div class="carrot carrot-4">🥕</div>
+        <div class="carrot carrot-5">🥕</div>
+        <div class="carrot carrot-6">🥕</div>
+        <div class="carrot carrot-7">🥕</div>
+        <div class="carrot carrot-8">🥕</div>
+        <div class="carrot carrot-9">🥕</div>
+        <div class="carrot carrot-10">🥕</div>
+        <div class="carrot carrot-11">🥕</div>
+        <div class="carrot carrot-12">🥕</div>
+        <div class="carrot carrot-13">🥕</div>
+        <div class="carrot carrot-14">🥕</div>
+        <div class="carrot carrot-15">🥕</div>
+        <div class="carrot carrot-16">🥕</div>
+        <div class="carrot carrot-17">🥕</div>
+        <div class="carrot carrot-18">🥕</div>
+        <div class="carrot carrot-19">🥕</div>
+        <div class="carrot carrot-20">🥕</div>
+        <div class="running-boy boy-1">🏃</div>
+        <div class="running-boy boy-2">🏃</div>
+        <div class="running-boy boy-3">🏃</div>
+        <div class="running-boy boy-4">🏃</div>
+        <div class="running-boy boy-5">🏃</div>
+        <div class="running-boy boy-6">🏃</div>
+        <div class="running-boy boy-7">🏃</div>
+        <div class="running-boy boy-8">🏃</div>
+        <div class="running-boy boy-9">🏃</div>
+        <div class="running-boy boy-10">🏃</div>
+        <div class="running-boy boy-11">🏃</div>
+        <div class="running-boy boy-12">🏃</div>
+        <div class="running-boy boy-13">🏃</div>
+        <div class="running-boy boy-14">🏃</div>
+        <div class="running-boy boy-15">🏃</div>
+        <div class="running-boy boy-16">🏃</div>
+        <div class="running-boy boy-17">🏃</div>
+        <div class="running-boy boy-18">🏃</div>
+        <div class="running-boy boy-19">🏃</div>
+        <div class="running-boy boy-20">🏃</div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="platform-title">Tutoring Platform</h1>
+            <div class="header-controls">
+                <div class="animation-switcher-container">
+                    <button class="animation-switcher" id="animationSwitcher"
+                            aria-label="Change background animation">
+                        <span class="animation-icon">🎬</span>
+                    </button>
+                    <div class="animation-menu" id="animationMenu">
+                        <button class="animation-option" data-animation="none">No Animation</button>
+                        <button class="animation-option" data-animation="lights">Lights</button>
+                        <button class="animation-option" data-animation="waves">Waves</button>
+                        <button class="animation-option" data-animation="gradient">Background Gradient</button>
+                        <button class="animation-option" data-animation="rabbits">Jumping Rabbits</button>
+                        <button class="animation-option" data-animation="boy">Running Boy</button>
+                    </div>
+                </div>
+                <a href="index.html" class="materials-tab">
+                    <span>Home</span>
+                </a>
+                <a href="whiteboard.html" class="whiteboard-tab">
+                    <span>Whiteboard</span>
+                </a>
+                <a href="reference.html" class="reference-tab">
+                    <span>Reference</span>
+                </a>
+                <button class="theme-switcher" id="themeSwitcher" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="materials-main">
+            <h2 class="materials-title">Materials Library</h2>
+            <p class="materials-subtitle">Upload and manage your teaching materials</p>
+
+            <!-- Upload Sections -->
+            <div class="materials-upload-grid">
+                <div class="material-upload-card">
+                    <div class="upload-icon-large">📷</div>
+                    <h3>Upload Photos</h3>
+                    <p>Add images for your lessons</p>
+                    <label for="materialPhotoUpload" class="material-upload-btn">
+                        <span>📤</span> Upload Photo
+                        <input type="file" id="materialPhotoUpload" accept="image/*" multiple hidden>
+                    </label>
+                </div>
+
+                <div class="material-upload-card">
+                    <div class="upload-icon-large">📄</div>
+                    <h3>Upload Texts</h3>
+                    <p>Add text documents</p>
+                    <label for="materialTextUpload" class="material-upload-btn">
+                        <span>📤</span> Upload Text
+                        <input type="file" id="materialTextUpload" accept=".txt,.doc,.docx,.pdf" multiple hidden>
+                    </label>
+                </div>
+
+                <div class="material-upload-card">
+                    <div class="upload-icon-large">✏️</div>
+                    <h3>Upload Exercises</h3>
+                    <p>Add exercise files</p>
+                    <label for="materialExerciseUpload" class="material-upload-btn">
+                        <span>📤</span> Upload Exercise
+                        <input type="file" id="materialExerciseUpload" accept=".pdf,.doc,.docx,.txt" multiple hidden>
+                    </label>
+                </div>
+
+                <div class="material-upload-card">
+                    <div class="upload-icon-large">📚</div>
+                    <h3>Upload Homework</h3>
+                    <p>Add homework assignments</p>
+                    <label for="materialHomeworkUpload" class="material-upload-btn">
+                        <span>📤</span> Upload Homework
+                        <input type="file" id="materialHomeworkUpload" accept=".pdf,.doc,.docx,.txt" multiple hidden>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Saved Materials Display -->
+            <div class="materials-library">
+                <h3 class="library-title">Saved Materials</h3>
+                
+                <!-- Photos -->
+                <div class="material-category">
+                    <h4 class="category-title">📷 Photos</h4>
+                    <div class="materials-grid" id="photosGrid"></div>
+                </div>
+
+                <!-- Texts -->
+                <div class="material-category">
+                    <h4 class="category-title">📄 Texts</h4>
+                    <div class="materials-grid" id="textsGrid"></div>
+                </div>
+
+                <!-- Exercises -->
+                <div class="material-category">
+                    <h4 class="category-title">✏️ Exercises</h4>
+                    <div class="materials-grid" id="exercisesGrid"></div>
+                </div>
+
+                <!-- Homework -->
+                <div class="material-category">
+                    <h4 class="category-title">📚 Homework</h4>
+                    <div class="materials-grid" id="homeworkGrid"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modern Alert Container -->
+    <div id="alertContainer" class="alert-container"></div>
+
+    <script src="script.js"></script>
+    <script src="materials.js"></script>
+</body>
+</html>

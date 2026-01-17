@@ -1,0 +1,242 @@
+/* Reference Page Styles */
+.page-title {
+    font-size: 36px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 40px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.reference-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 20px 0;
+}
+
+.reference-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 32px 24px;
+    text-align: center;
+    border: 1px solid var(--glass-border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 16px var(--shadow);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInScale 0.5s ease-out;
+    opacity: 0;
+    animation-fill-mode: forwards;
+    text-decoration: none;
+    color: inherit;
+}
+
+.reference-card:nth-child(1) { animation-delay: 0.1s; }
+.reference-card:nth-child(2) { animation-delay: 0.2s; }
+.reference-card:nth-child(3) { animation-delay: 0.3s; }
+.reference-card:nth-child(4) { animation-delay: 0.4s; }
+.reference-card:nth-child(5) { animation-delay: 0.5s; }
+.reference-card:nth-child(6) { animation-delay: 0.6s; }
+.reference-card:nth-child(7) { animation-delay: 0.7s; }
+.reference-card:nth-child(8) { animation-delay: 0.8s; }
+.reference-card:nth-child(9) { animation-delay: 0.9s; }
+.reference-card:nth-child(10) { animation-delay: 1.0s; }
+.reference-card:nth-child(11) { animation-delay: 1.1s; }
+.reference-card:nth-child(12) { animation-delay: 1.2s; }
+
+.reference-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--accent-gradient);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reference-card:hover::before {
+    transform: scaleX(1);
+}
+
+.reference-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 32px var(--shadow-lg), 0 0 0 1px var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.card-icon {
+    font-size: 48px;
+    transition: all 0.3s ease;
+}
+
+.reference-card:hover .card-icon {
+    transform: scale(1.15) rotate(8deg) translateY(-4px);
+    animation: bounce 0.6s ease;
+    filter: drop-shadow(0 8px 16px rgba(99, 102, 241, 0.3));
+}
+
+.reference-card h3 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.reference-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: scale(1.15) rotate(8deg) translateY(-4px);
+    }
+    50% {
+        transform: scale(1.25) rotate(12deg) translateY(-8px);
+    }
+}
+
+/* Grammar Explanation Cards */
+.grammar-explanation-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 32px 24px;
+    border: 1px solid var(--glass-border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px var(--shadow);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInScale 0.5s ease-out;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+.grammar-explanation-card:nth-child(1) { animation-delay: 0.1s; }
+.grammar-explanation-card:nth-child(2) { animation-delay: 0.2s; }
+.grammar-explanation-card:nth-child(3) { animation-delay: 0.3s; }
+.grammar-explanation-card:nth-child(4) { animation-delay: 0.4s; }
+
+.grammar-explanation-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--accent-gradient);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.grammar-explanation-card:hover::before {
+    transform: scaleX(1);
+}
+
+.grammar-explanation-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 32px var(--shadow-lg), 0 0 0 1px var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.grammar-explanation-card h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 16px 0;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.grammar-explanation-card p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin: 12px 0;
+    line-height: 1.7;
+}
+
+.grammar-explanation-card p strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Back Link */
+.back-link {
+    display: inline-block;
+    margin-bottom: 30px;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.back-link:hover {
+    color: var(--text-primary);
+    transform: translateX(-5px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .reference-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+    }
+
+    .reference-card {
+        padding: 24px 20px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .reference-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .reference-card {
+        padding: 20px 16px;
+    }
+
+    .card-icon {
+        font-size: 40px;
+    }
+
+    .reference-card h3 {
+        font-size: 20px;
+    }
+}
