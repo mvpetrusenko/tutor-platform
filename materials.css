@@ -224,6 +224,32 @@
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
+.material-action-btn.select-btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.material-action-btn.select-btn:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.5);
+}
+
+.material-action-btn.delete-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.material-action-btn.delete-btn:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+}
+
 .empty-state {
     text-align: center;
     padding: 40px 20px;
@@ -244,6 +270,70 @@
     50% {
         transform: scale(1.25) rotate(12deg) translateY(-8px);
     }
+}
+
+/* Exercise Tabs on Materials Page */
+.material-category .exercise-tabs-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 16px var(--shadow);
+}
+
+.material-category .exercise-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.material-category .exercise-tab {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 40px 14px 24px;
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+    border: 1px solid var(--accent-color);
+    border-radius: 16px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px var(--shadow);
+    text-decoration: none;
+    position: relative;
+}
+
+.material-category .exercise-tab .exercise-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.material-category .exercise-tab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow-lg);
+    border-color: #f43f5e;
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    color: white;
+}
+
+.material-category .exercise-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 /* Alert Styles (same as whiteboard) */

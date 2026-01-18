@@ -132,6 +132,9 @@
                     <a href="materials.html" class="materials-tab">
                         <span>Materials</span>
                     </a>
+                    <a href="exercises.html" class="exercises-tab">
+                        <span>Exercises</span>
+                    </a>
                     <a href="whiteboard.html" class="whiteboard-tab">
                         <span>Whiteboard</span>
                     </a>
@@ -209,7 +212,7 @@
             <!-- Exercise Upload - Full Width -->
             <section class="upload-card upload-card-full exercise-card">
                 <div class="upload-icon">✏️</div>
-                <h2>Choose Exercise</h2>
+                <h2>Exercises</h2>
                 <p class="upload-description">Choose from saved exercises or upload new</p>
                 <div class="upload-buttons">
                     <button class="upload-button-secondary" id="chooseExerciseBtn">Choose from Library</button>
@@ -225,29 +228,20 @@
                     </div>
                     <div class="materials-selector-grid" id="exerciseSelectorGrid"></div>
                 </div>
+                <div class="exercise-tabs-preview" id="exerciseTabsPreview"></div>
                 <div class="upload-preview" id="exercisePreview"></div>
             </section>
 
-            <!-- Homework Upload - Full Width -->
+            <!-- Homework Section - Full Width -->
             <section class="upload-card upload-card-full homework-card">
-                <div class="upload-icon">📚</div>
-                <h2>Choose Homework</h2>
-                <p class="upload-description">Choose from saved homework or upload new</p>
-                <div class="upload-buttons">
-                    <button class="upload-button-secondary" id="chooseHomeworkBtn">Choose from Library</button>
-                    <label for="homeworkUpload" class="upload-button">
-                        Upload New
-                        <input type="file" id="homeworkUpload" accept=".pdf,.doc,.docx,.txt" hidden>
-                    </label>
-                </div>
-                <div class="materials-selector" id="homeworkSelector" style="display: none;">
-                    <div class="materials-selector-header">
-                        <h3>Select Homework</h3>
-                        <button class="close-selector" id="closeHomeworkSelector">×</button>
+                <div class="homework-editor">
+                    <textarea id="homepageTextarea" class="homework-textarea"
+                        placeholder="Enter your text here... You can edit, copy, paste, and delete text."></textarea>
+                    <div class="homework-actions">
+                        <button class="homework-btn save-btn" id="saveHomepageBtn">💾 Save</button>
+                        <button class="homework-btn clear-btn" id="clearHomepageBtn">🗑️ Clear</button>
                     </div>
-                    <div class="materials-selector-grid" id="homeworkSelectorGrid"></div>
                 </div>
-                <div class="upload-preview" id="homeworkPreview"></div>
             </section>
 
             <!-- Contacts Section -->
@@ -262,15 +256,14 @@
                         <span class="contact-icon">📱</span>
                         <span>Phone: +7 1111 111111</span>
                     </div>
-                    <div class="contact-item">
-                        <span class="contact-icon">💬</span>
-                        <span>Support: Available 24/7</span>
-                    </div>
                 </div>
             </section>
         </main>
     </div>
 
+    <!-- Libraries for document reading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="script.js"></script>
 </body>
 

@@ -124,6 +124,9 @@
                 <a href="index.html" class="materials-tab">
                     <span>Home</span>
                 </a>
+                <a href="exercises.html" class="exercises-tab">
+                    <span>Exercises</span>
+                </a>
                 <a href="whiteboard.html" class="whiteboard-tab">
                     <span>Whiteboard</span>
                 </a>
@@ -203,6 +206,10 @@
                 <!-- Exercises -->
                 <div class="material-category">
                     <h4 class="category-title">✏️ Exercises</h4>
+                    <!-- Exercise Tabs from exercises.js -->
+                    <div class="exercise-tabs-container" style="margin-bottom: 24px;">
+                        <div class="exercise-tabs" id="materialsExerciseTabs"></div>
+                    </div>
                     <div class="materials-grid" id="exercisesGrid"></div>
                 </div>
 
@@ -219,6 +226,7 @@
     <div id="alertContainer" class="alert-container"></div>
 
     <script src="script.js"></script>
+    <script src="exercises.js"></script>
     <script src="materials.js"></script>
 </body>
 </html>

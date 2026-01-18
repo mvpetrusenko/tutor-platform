@@ -1,0 +1,163 @@
+/* Exercises Page Styles */
+.exercises-main {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.exercises-title {
+    font-size: 36px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.exercises-subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 16px;
+    margin-bottom: 40px;
+}
+
+/* Exercise Tabs Container */
+.exercise-tabs-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 16px var(--shadow);
+}
+
+.exercise-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.exercise-tab {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+    border: 1px solid var(--accent-color);
+    border-radius: 16px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px var(--shadow);
+    text-decoration: none;
+}
+
+.exercise-tab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow-lg);
+    border-color: #f43f5e;
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    color: white;
+}
+
+.exercise-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.exercise-tab.active .exercise-number {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.exercise-name {
+    font-weight: 600;
+}
+
+
+/* Exercise Content Container (for individual exercise pages) */
+.exercise-content-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 32px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 16px var(--shadow);
+    min-height: 400px;
+}
+
+.exercise-content {
+    animation: fadeIn 0.4s ease-out;
+}
+
+.exercise-content-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.exercise-content-description {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.exercise-header {
+    margin-bottom: 30px;
+}
+
+.back-to-exercises {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+    margin-bottom: 20px;
+}
+
+.back-to-exercises:hover {
+    background: var(--accent-gradient);
+    color: white;
+    transform: translateX(-4px);
+    box-shadow: 0 4px 12px var(--shadow-lg);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

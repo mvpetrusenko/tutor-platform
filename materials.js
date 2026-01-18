@@ -246,6 +246,7 @@ function displayMaterialCategory(type, items, container) {
         if (type === 'photos' && item.type === 'image') {
             materialCard.innerHTML = `
                 <div class="material-item-actions">
+                    <button class="material-action-btn select-btn" title="Use on Home Page" data-id="${item.id}" data-type="${type}">✓</button>
                     <button class="material-action-btn delete-btn" title="Delete" data-id="${item.id}" data-type="${type}">🗑️</button>
                 </div>
                 <img src="${item.data}" alt="${item.name}" class="material-item-image">
@@ -260,6 +261,7 @@ function displayMaterialCategory(type, items, container) {
             };
             materialCard.innerHTML = `
                 <div class="material-item-actions">
+                    <button class="material-action-btn select-btn" title="Use on Home Page" data-id="${item.id}" data-type="${type}">✓</button>
                     <button class="material-action-btn delete-btn" title="Delete" data-id="${item.id}" data-type="${type}">🗑️</button>
                 </div>
                 <div class="material-item-icon">${icons[type] || '📄'}</div>
@@ -280,6 +282,57 @@ function displayMaterialCategory(type, items, container) {
             deleteMaterial(type, id);
         });
     });
+
+    // Add select functionality (for all types)
+    container.querySelectorAll('.select-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = btn.dataset.id;
+            const type = btn.dataset.type;
+            selectMaterialForHomePage(type, id);
+        });
+    });
+}
+
+// Select material to use on home page
+function selectMaterialForHomePage(type, id) {
+    const materialId = parseFloat(id);
+    const material = materials[type].find(item => {
+        const itemId = parseFloat(item.id);
+        return itemId === materialId || String(item.id) === String(id);
+    });
+
+    if (!material) {
+        showAlert('error', 'Error', 'Material not found.');
+        return;
+    }
+
+    // Map type to localStorage key (matching script.js format)
+    // For photos: 'photos' -> 'photo' -> 'Photo' -> 'selectedPhotos'
+    // For texts: 'texts' -> 'text' -> 'Text' -> 'selectedTexts'
+    const previewType = type === 'photos' ? 'photo' : type.slice(0, -1);
+    const key = previewType.charAt(0).toUpperCase() + previewType.slice(1);
+    const selectedKey = `selected${key}s`;
+
+    // Get current selected materials
+    const currentSelected = JSON.parse(localStorage.getItem(selectedKey) || '[]');
+    
+    // Check if already selected
+    const alreadySelected = currentSelected.some(item => {
+        const itemId = parseFloat(item.id);
+        return itemId === materialId || String(item.id) === String(id);
+    });
+
+    if (alreadySelected) {
+        showAlert('info', 'Already Selected', `"${material.name}" is already selected on the home page.`);
+        return;
+    }
+
+    // Add to selected materials
+    currentSelected.push(material);
+    localStorage.setItem(selectedKey, JSON.stringify(currentSelected));
+
+    showAlert('success', 'Selected', `"${material.name}" has been added to the home page. You can now use it in the "${type === 'photos' ? 'Download Photo' : type === 'texts' ? 'Choose Text' : type === 'exercises' ? 'Choose Exercise' : 'Choose Homework'}" section.`);
 }
 
 // Delete material
@@ -338,5 +391,132 @@ function deleteMaterial(type, id) {
     });
 }
 
+// Display exercise tabs on materials page
+function displayExerciseTabs() {
+    const tabsContainer = document.getElementById('materialsExerciseTabs');
+    if (!tabsContainer) return;
+    
+    // Get exercises from exercises.js (if available) or use default
+    let exercisesList = [];
+    if (typeof exercises !== 'undefined' && Array.isArray(exercises)) {
+        exercisesList = exercises;
+    } else {
+        // Fallback: try to get from script.js or use default
+        exercisesList = [
+            { id: 1, name: 'Word/Phrases Cards', url: 'exercise-1.html' },
+            { id: 2, name: 'Repeat It', url: 'exercise-2.html' }
+        ];
+    }
+    
+    tabsContainer.innerHTML = '';
+    
+    exercisesList.forEach(exercise => {
+        const tab = document.createElement('a');
+        tab.className = 'exercise-tab';
+        tab.href = exercise.url;
+        tab.style.cssText = `
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 40px 14px 24px;
+            background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+            border: 1px solid var(--accent-color);
+            border-radius: 16px;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px var(--shadow);
+            text-decoration: none;
+            position: relative;
+        `;
+        tab.innerHTML = `
+            <span class="exercise-number">${exercise.id}</span>
+            <span class="exercise-name">${exercise.name}</span>
+        `;
+        
+        // Add select button overlay
+        const selectBtn = document.createElement('button');
+        selectBtn.className = 'material-action-btn select-btn';
+        selectBtn.title = 'Use on Home Page';
+        selectBtn.style.cssText = `
+            position: absolute;
+            top: 50%;
+            right: 8px;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(52, 211, 153, 0.3);
+            z-index: 10;
+            flex-shrink: 0;
+        `;
+        selectBtn.innerHTML = '✓';
+        selectBtn.onmouseover = () => {
+            selectBtn.style.transform = 'translateY(-50%) scale(1.1)';
+            selectBtn.style.boxShadow = '0 4px 12px rgba(52, 211, 153, 0.5)';
+            selectBtn.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+        };
+        selectBtn.onmouseout = () => {
+            selectBtn.style.transform = 'translateY(-50%) scale(1)';
+            selectBtn.style.boxShadow = '0 2px 8px rgba(52, 211, 153, 0.3)';
+            selectBtn.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+        };
+        selectBtn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            selectExerciseForHomePage(exercise);
+        };
+        
+        // Add hover effect for the tab
+        tab.onmouseover = () => {
+            tab.style.background = 'linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)';
+            tab.style.transform = 'translateY(-2px)';
+            tab.style.boxShadow = '0 4px 12px var(--shadow-lg)';
+        };
+        tab.onmouseout = () => {
+            tab.style.background = 'linear-gradient(135deg, #818cf8 0%, #6366f1 100%)';
+            tab.style.transform = 'translateY(0)';
+            tab.style.boxShadow = '0 2px 8px var(--shadow)';
+        };
+        
+        tab.appendChild(selectBtn);
+        tabsContainer.appendChild(tab);
+    });
+}
+
+// Select exercise for home page
+function selectExerciseForHomePage(exercise) {
+    const selectedKey = 'selectedExercises';
+    const currentSelected = JSON.parse(localStorage.getItem(selectedKey) || '[]');
+    
+    // Check if already selected
+    const alreadySelected = currentSelected.some(item => {
+        return item.id === exercise.id || item.url === exercise.url;
+    });
+    
+    if (alreadySelected) {
+        showAlert('info', 'Already Selected', `"${exercise.name}" is already selected on the home page.`);
+        return;
+    }
+    
+    // Add to selected exercises
+    currentSelected.push(exercise);
+    localStorage.setItem(selectedKey, JSON.stringify(currentSelected));
+    
+    showAlert('success', 'Selected', `"${exercise.name}" has been added to the home page. You can now use it in the "Choose Exercise" section.`);
+}
+
 // Initialize display
 displayMaterials();
+displayExerciseTabs();
