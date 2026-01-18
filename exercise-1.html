@@ -127,6 +127,9 @@
                 <a href="materials.html" class="materials-tab">
                     <span>Materials</span>
                 </a>
+                <a href="exercises.html" class="exercises-tab">
+                    <span>Exercises</span>
+                </a>
                 <a href="whiteboard.html" class="whiteboard-tab">
                     <span>Whiteboard</span>
                 </a>
@@ -151,12 +154,43 @@
             <div class="exercise-content-container">
                 <div class="exercise-content">
                     <h3 class="exercise-content-title">Word/Phrases Cards</h3>
-                    <p class="exercise-content-description">Exercise content will be implemented here</p>
+                    <p class="exercise-content-description">Enter words or phrases to create vocabulary cards</p>
+                    
+                    <!-- Text Input Section -->
+                    <div class="word-cards-input-section">
+                        <textarea id="wordsTextarea" class="words-textarea" 
+                            placeholder="Enter words or phrases here..."></textarea>
+                        <p class="input-tip">💡 Tip: Enter words separated by commas (e.g., apple, banana, orange)</p>
+                        <div class="button-group">
+                            <button class="done-button" id="doneButton">Done</button>
+                            <button class="clear-input-button" id="clearWordsButton">Clear</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Translation Input Section -->
+                    <div class="word-cards-input-section">
+                        <textarea id="translationsTextarea" class="words-textarea" 
+                            placeholder="Enter translations here..."></textarea>
+                        <p class="input-tip">💡 Tip: Enter translations for words</p>
+                        <div class="button-group">
+                            <button class="done-button translation-done-button" id="translationDoneButton">Done</button>
+                            <button class="clear-input-button" id="clearTranslationsButton">Clear</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Cards Section -->
+                    <div class="word-cards-container" id="wordCardsContainer">
+                        <!-- Cards will be dynamically created here -->
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
+    <!-- Modern Alert Container -->
+    <div id="alertContainer" class="alert-container"></div>
+
     <script src="script.js"></script>
+    <script src="exercise-1.js"></script>
 </body>
 </html>

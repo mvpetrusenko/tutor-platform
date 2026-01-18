@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repeat It - Tutoring Platform</title>
+    <title>Test Yourself - Tutoring Platform</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="exercises.css">
 </head>
@@ -127,6 +127,9 @@
                 <a href="materials.html" class="materials-tab">
                     <span>Materials</span>
                 </a>
+                <a href="exercises.html" class="exercises-tab">
+                    <span>Exercises</span>
+                </a>
                 <a href="whiteboard.html" class="whiteboard-tab">
                     <span>Whiteboard</span>
                 </a>
@@ -143,15 +146,108 @@
         <main class="exercises-main">
             <div class="exercise-header">
                 <a href="exercises.html" class="back-to-exercises">← Back to Exercises</a>
-                <h2 class="exercises-title">2. Repeat It</h2>
-                <p class="exercises-subtitle">Practice repetition and memorization exercises</p>
+                <h2 class="exercises-title">4. Test Yourself</h2>
+                <p class="exercises-subtitle">Test your knowledge with interactive quizzes</p>
             </div>
 
             <!-- Exercise Content -->
             <div class="exercise-content-container">
                 <div class="exercise-content">
-                    <h3 class="exercise-content-title">Repeat It</h3>
-                    <p class="exercise-content-description">Exercise content will be implemented here</p>
+                    <!-- Test Builder Section -->
+                    <div class="test-builder-section" id="testBuilderSection">
+                        <h3 class="exercise-content-title">Build Your Test</h3>
+                        <p class="exercise-content-description">Create questions with multiple choice answers</p>
+                        
+                        <div class="test-name-form">
+                            <div class="form-group">
+                                <label for="testName">Test Name:</label>
+                                <input type="text" id="testName" class="form-input" placeholder="Enter test name...">
+                            </div>
+                        </div>
+                        
+                        <div class="question-form">
+                            <div class="form-group">
+                                <label for="questionText">Question (English word or sentence):</label>
+                                <input type="text" id="questionText" class="form-input" placeholder="Enter question...">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="correctAnswer">Correct Answer:</label>
+                                <input type="text" id="correctAnswer" class="form-input" placeholder="Enter correct answer...">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Options (3-4 options):</label>
+                                <input type="text" id="option1" class="form-input" placeholder="Option 1">
+                                <input type="text" id="option2" class="form-input" placeholder="Option 2">
+                                <input type="text" id="option3" class="form-input" placeholder="Option 3">
+                                <input type="text" id="option4" class="form-input" placeholder="Option 4 (optional)">
+                            </div>
+                            
+                            <div class="button-group">
+                                <button class="add-question-button" id="addQuestionBtn">Add Question</button>
+                                <button class="clear-input-button" id="clearQuestionFormButton">Clear</button>
+                            </div>
+                        </div>
+                        
+                        <div class="questions-list" id="questionsList">
+                            <h4>Questions Added:</h4>
+                            <div id="questionsContainer"></div>
+                        </div>
+                        
+                        <div class="test-actions">
+                            <button class="save-test-button" id="saveTestBtn" disabled>Save Test</button>
+                            <button class="clear-test-button" id="clearTestBtn">Clear Current Test</button>
+                        </div>
+                        
+                        <div class="saved-tests-section">
+                            <h4>Saved Tests:</h4>
+                            <div id="savedTestsContainer"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Test Selector Section -->
+                    <div class="test-selector-section" id="testSelectorSection" style="display: none;">
+                        <h3 class="exercise-content-title">Select a Test</h3>
+                        <p class="exercise-content-description">Choose a test to start</p>
+                        <div id="testSelectorContainer"></div>
+                        <button class="back-to-builder-button" id="backToBuilderBtn">Back to Builder</button>
+                    </div>
+                    
+                    <!-- Test Runner Section -->
+                    <div class="test-runner-section" id="testRunnerSection" style="display: none;">
+                        <h3 class="exercise-content-title">Test Yourself</h3>
+                        <div class="test-progress">
+                            <span id="questionCounter">Question 1 of 1</span>
+                        </div>
+                        
+                        <div class="test-question">
+                            <h4 id="currentQuestionText"></h4>
+                            <div class="options-container" id="optionsContainer"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Results Section -->
+                    <div class="test-results-section" id="testResultsSection" style="display: none;">
+                        <h3 class="exercise-content-title">Test Results</h3>
+                        <div class="results-summary">
+                            <div class="score-display">
+                                <h4 id="totalScore">Score: 0/0</h4>
+                                <p id="scorePercentage">0%</p>
+                            </div>
+                            <div class="results-breakdown">
+                                <p id="correctCount">Correct: 0</p>
+                                <p id="incorrectCount">Incorrect: 0</p>
+                            </div>
+                        </div>
+                        
+                        <div class="results-details" id="resultsDetails"></div>
+                        
+                        <div class="results-actions">
+                            <button class="retake-test-button" id="retakeTestBtn">Retake Test</button>
+                            <button class="new-test-button" id="newTestBtn">Create New Test</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -161,5 +257,6 @@
     <div id="alertContainer" class="alert-container"></div>
 
     <script src="script.js"></script>
+    <script src="exercise-4.js"></script>
 </body>
 </html>

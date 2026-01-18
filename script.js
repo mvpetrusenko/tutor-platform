@@ -1,6 +1,97 @@
+// Modern Alert System (same as materials page)
+function showAlert(type, title, message, onConfirm = null) {
+    const container = document.getElementById('alertContainer');
+    if (!container) return;
+
+    const alert = document.createElement('div');
+    alert.className = `alert ${type}`;
+
+    const icons = {
+        success: '✅',
+        info: 'ℹ️',
+        warning: '⚠️',
+        error: '❌'
+    };
+
+    alert.innerHTML = `
+        <span class="alert-icon">${icons[type] || icons.info}</span>
+        <div class="alert-content">
+            <h4 class="alert-title">${title}</h4>
+            <p class="alert-message">${message}</p>
+        </div>
+        <button class="alert-close" aria-label="Close">×</button>
+    `;
+
+    container.appendChild(alert);
+
+    // Close button
+    const closeBtn = alert.querySelector('.alert-close');
+    closeBtn.addEventListener('click', () => {
+        removeAlert(alert);
+    });
+
+    // Auto-remove after 4 seconds (or 6 seconds for warnings with confirm)
+    const autoRemove = setTimeout(() => {
+        removeAlert(alert);
+    }, onConfirm ? 6000 : 4000);
+
+    // If there's a confirm action, add confirm button
+    if (onConfirm) {
+        const confirmBtn = document.createElement('button');
+        confirmBtn.textContent = 'Confirm';
+        confirmBtn.style.cssText = `
+            margin-top: 8px;
+            padding: 6px 16px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        `;
+        confirmBtn.onmouseover = () => {
+            confirmBtn.style.transform = 'scale(1.05)';
+            confirmBtn.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+        };
+        confirmBtn.onmouseout = () => {
+            confirmBtn.style.transform = 'scale(1)';
+            confirmBtn.style.boxShadow = 'none';
+        };
+        confirmBtn.addEventListener('click', () => {
+            clearTimeout(autoRemove);
+            removeAlert(alert);
+            onConfirm();
+        });
+        alert.querySelector('.alert-content').appendChild(confirmBtn);
+    }
+
+    // Remove on click outside (for warnings)
+    if (onConfirm) {
+        const clickHandler = (e) => {
+            if (!alert.contains(e.target)) {
+                clearTimeout(autoRemove);
+                removeAlert(alert);
+                document.removeEventListener('click', clickHandler);
+            }
+        };
+        setTimeout(() => document.addEventListener('click', clickHandler), 100);
+    }
+}
+
+function removeAlert(alert) {
+    alert.classList.add('hiding');
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.parentNode.removeChild(alert);
+        }
+    }, 300);
+}
+
 // Theme Management
 const themeSwitcher = document.getElementById('themeSwitcher');
-const themeIcon = themeSwitcher.querySelector('.theme-icon');
+const themeIcon = themeSwitcher ? themeSwitcher.querySelector('.theme-icon') : null;
 
 // Load saved theme or default to light
 const currentTheme = localStorage.getItem('theme') || 'light';
@@ -107,55 +198,53 @@ const previews = {
 // Delete material from library (called from materials selector)
 function deleteMaterialFromLibrary(type, material) {
     // Confirm deletion
-    if (!confirm(`Are you sure you want to delete "${material.name}" from your materials library? This will also remove it from any selected materials on the home page.`)) {
-        return;
-    }
-    
-    // Get materials from localStorage
-    const typeMap = {
-        photos: 'materialsPhotos',
-        texts: 'materialsTexts',
-        exercises: 'materialsExercises',
-        homework: 'materialsHomework'
-    };
-    
-    const storageKey = typeMap[type];
-    if (!storageKey) {
-        console.error('Invalid material type:', type);
-        return;
-    }
-    
-    // Get current materials
-    const materials = JSON.parse(localStorage.getItem(storageKey) || '[]');
-    
-    // Remove the material
-    const materialId = parseFloat(material.id);
-    const updated = materials.filter(item => {
-        const itemId = parseFloat(item.id);
-        return itemId !== materialId && String(item.id) !== String(material.id);
+    showAlert('warning', 'Delete Material', `Are you sure you want to delete "${material.name}" from your materials library? This will also remove it from any selected materials on the home page.`, () => {
+        // Get materials from localStorage
+        const typeMap = {
+            photos: 'materialsPhotos',
+            texts: 'materialsTexts',
+            exercises: 'materialsExercises',
+            homework: 'materialsHomework'
+        };
+        
+        const storageKey = typeMap[type];
+        if (!storageKey) {
+            console.error('Invalid material type:', type);
+            return;
+        }
+        
+        // Get current materials
+        const materials = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        
+        // Remove the material
+        const materialId = parseFloat(material.id);
+        const updated = materials.filter(item => {
+            const itemId = parseFloat(item.id);
+            return itemId !== materialId && String(item.id) !== String(material.id);
+        });
+        
+        // Save updated materials
+        localStorage.setItem(storageKey, JSON.stringify(updated));
+        
+        // Also remove from selected materials on home page
+        const previewType = type === 'photos' ? 'photo' : type.slice(0, -1);
+        const key = previewType.charAt(0).toUpperCase() + previewType.slice(1);
+        const selectedKey = `selected${key}s`;
+        const selected = JSON.parse(localStorage.getItem(selectedKey) || '[]');
+        const updatedSelected = selected.filter(item => {
+            const itemId = parseFloat(item.id);
+            return itemId !== materialId && String(item.id) !== String(material.id);
+        });
+        localStorage.setItem(selectedKey, JSON.stringify(updatedSelected));
+        
+        // Refresh the selector display
+        showMaterialsSelector(type);
+        
+        // Refresh displayed materials on home page
+        displaySelectedMaterials(type);
+        
+        showAlert('success', 'Deleted', `"${material.name}" has been deleted from your materials library.`);
     });
-    
-    // Save updated materials
-    localStorage.setItem(storageKey, JSON.stringify(updated));
-    
-    // Also remove from selected materials on home page
-    const previewType = type === 'photos' ? 'photo' : type.slice(0, -1);
-    const key = previewType.charAt(0).toUpperCase() + previewType.slice(1);
-    const selectedKey = `selected${key}s`;
-    const selected = JSON.parse(localStorage.getItem(selectedKey) || '[]');
-    const updatedSelected = selected.filter(item => {
-        const itemId = parseFloat(item.id);
-        return itemId !== materialId && String(item.id) !== String(material.id);
-    });
-    localStorage.setItem(selectedKey, JSON.stringify(updatedSelected));
-    
-    // Refresh the selector display
-    showMaterialsSelector(type);
-    
-    // Refresh displayed materials on home page
-    displaySelectedMaterials(type);
-    
-    alert(`"${material.name}" has been deleted from your materials library.`);
 }
 
 function downloadMaterial(material, type) {
@@ -224,7 +313,7 @@ function downloadMaterial(material, type) {
                     }, 100);
                 }).catch(err => {
                     console.error('Error downloading image:', err);
-                    alert('Error downloading file. Please try again.');
+                    showAlert('error', 'Error', 'Error downloading file. Please try again.');
                 });
             }
             return;
@@ -270,7 +359,7 @@ function downloadMaterial(material, type) {
         }
     } catch (error) {
         console.error('Error downloading material:', error);
-        alert('Error downloading file. Please try again.');
+        showAlert('error', 'Error', 'Error downloading file. Please try again.');
     }
 }
 
@@ -548,15 +637,16 @@ if (homepageTextarea && saveHomepageBtn && clearHomepageBtn) {
     saveHomepageBtn.addEventListener('click', () => {
         const content = homepageTextarea.value;
         localStorage.setItem('homepageContent', content);
-        alert('Homepage content saved successfully!');
+        showAlert('success', 'Saved', 'Homepage content saved successfully!');
     });
     
     // Clear button functionality
     clearHomepageBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to clear all text? This action cannot be undone.')) {
+        showAlert('warning', 'Clear Content', 'Are you sure you want to clear all text? This action cannot be undone.', () => {
             homepageTextarea.value = '';
             localStorage.removeItem('homepageContent');
-        }
+            showAlert('success', 'Cleared', 'Content cleared successfully!');
+        });
     });
 }
 
@@ -1549,5 +1639,5 @@ function showImagePreview(file) {
 }
 
 function showFileDetails(file) {
-    alert(`File: ${file.name}\nSize: ${formatFileSize(file.size)}\nType: ${file.type}`);
+    showAlert('info', 'File Details', `File: ${file.name}\nSize: ${formatFileSize(file.size)}\nType: ${file.type}`);
 }

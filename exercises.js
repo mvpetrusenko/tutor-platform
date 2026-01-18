@@ -3,7 +3,9 @@
 // Exercise tabs data
 const exercises = [
     { id: 1, name: 'Word/Phrases Cards', url: 'exercise-1.html' },
-    { id: 2, name: 'Repeat It', url: 'exercise-2.html' }
+    { id: 2, name: 'Repeat It', url: 'exercise-2.html' },
+    { id: 3, name: 'Check Your Level', url: 'exercise-3.html' },
+    { id: 4, name: 'Test Yourself', url: 'exercise-4.html' }
     // More exercises can be added here
 ];
 
