@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exercises - Tutoring Platform</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="exercises.css">
+    <title>Word/Phrases Cards - Tutoring Platform</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/exercises.css">
 </head>
 <body data-theme="light">
     <!-- Animated Background Elements -->
@@ -127,6 +127,9 @@
                 <a href="materials.html" class="materials-tab">
                     <span>Materials</span>
                 </a>
+                <a href="exercises.html" class="exercises-tab">
+                    <span>Exercises</span>
+                </a>
                 <a href="whiteboard.html" class="whiteboard-tab">
                     <span>Whiteboard</span>
                 </a>
@@ -141,16 +144,44 @@
 
         <!-- Main Content -->
         <main class="exercises-main">
-            <h2 class="exercises-title">Exercises</h2>
-            <p class="exercises-subtitle">Interactive exercises for language learning</p>
+            <div class="exercise-header">
+                <a href="exercises.html" class="back-to-exercises">← Back to Exercises</a>
+                <h2 class="exercises-title">1. Word/Phrases Cards</h2>
+                <p class="exercises-subtitle">Create and practice with vocabulary cards</p>
+            </div>
 
-            <!-- Exercise Tabs -->
-            <div class="exercise-tabs-container">
-                <div class="exercise-tabs" id="exerciseTabs">
-                    <a href="exercise-1.html" class="exercise-tab">
-                        <span class="exercise-number">1</span>
-                        <span class="exercise-name">Word/Phrases Cards</span>
-                    </a>
+            <!-- Exercise Content -->
+            <div class="exercise-content-container">
+                <div class="exercise-content">
+                    <h3 class="exercise-content-title">Word/Phrases Cards</h3>
+                    <p class="exercise-content-description">Enter words or phrases to create vocabulary cards</p>
+                    
+                    <!-- Text Input Section -->
+                    <div class="word-cards-input-section">
+                        <textarea id="wordsTextarea" class="words-textarea" 
+                            placeholder="Enter words or phrases here..."></textarea>
+                        <p class="input-tip">💡 Tip: Enter words separated by commas (e.g., apple, banana, orange)</p>
+                        <div class="button-group">
+                            <button class="done-button" id="doneButton">Done</button>
+                            <button class="clear-input-button" id="clearWordsButton">Clear</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Translation Input Section -->
+                    <div class="word-cards-input-section">
+                        <textarea id="translationsTextarea" class="words-textarea" 
+                            placeholder="Enter translations here..."></textarea>
+                        <p class="input-tip">💡 Tip: Enter translations for words</p>
+                        <div class="button-group">
+                            <button class="done-button translation-done-button" id="translationDoneButton">Done</button>
+                            <button class="clear-input-button" id="clearTranslationsButton">Clear</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Cards Section -->
+                    <div class="word-cards-container" id="wordCardsContainer">
+                        <!-- Cards will be dynamically created here -->
+                    </div>
                 </div>
             </div>
         </main>
@@ -159,7 +190,7 @@
     <!-- Modern Alert Container -->
     <div id="alertContainer" class="alert-container"></div>
 
-    <script src="script.js"></script>
-    <script src="exercises.js"></script>
+    <script src="../../js/script.js"></script>
+    <script src="../../js/exercise-1.js"></script>
 </body>
 </html>

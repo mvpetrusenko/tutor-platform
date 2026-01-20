@@ -41,7 +41,7 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', Oxygen, Ubuntu, Cantarell, sans-serif;
     background: var(--bg-primary);
-    background-image: 
+    background-image:
         radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
         radial-gradient(at 50% 50%, rgba(167, 139, 250, 0.05) 0px, transparent 50%);
@@ -60,7 +60,7 @@ body::before {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: 
+    background:
         radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
         radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
         radial-gradient(circle at 40% 20%, rgba(167, 139, 250, 0.12) 0%, transparent 40%);
@@ -77,7 +77,7 @@ body::after {
     right: -50%;
     width: 200%;
     height: 200%;
-    background: 
+    background:
         radial-gradient(circle at 60% 30%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
         radial-gradient(circle at 30% 70%, rgba(139, 92, 246, 0.12) 0%, transparent 40%);
     animation: floatingOrb2 30s ease-in-out infinite;
@@ -87,18 +87,23 @@ body::after {
 }
 
 @keyframes floatingOrb1 {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translate(0, 0) scale(1) rotate(0deg);
         opacity: 1;
     }
+
     25% {
         transform: translate(80px, 60px) scale(1.2) rotate(90deg);
         opacity: 0.8;
     }
+
     50% {
         transform: translate(40px, 100px) scale(0.9) rotate(180deg);
         opacity: 1;
     }
+
     75% {
         transform: translate(-60px, 80px) scale(1.1) rotate(270deg);
         opacity: 0.9;
@@ -106,18 +111,23 @@ body::after {
 }
 
 @keyframes floatingOrb2 {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translate(0, 0) scale(1) rotate(0deg);
         opacity: 1;
     }
+
     25% {
         transform: translate(-80px, -60px) scale(0.9) rotate(-90deg);
         opacity: 0.8;
     }
+
     50% {
         transform: translate(-40px, -100px) scale(1.2) rotate(-180deg);
         opacity: 1;
     }
+
     75% {
         transform: translate(60px, -80px) scale(1.1) rotate(-270deg);
         opacity: 0.9;
@@ -136,14 +146,18 @@ body::after {
 
 /* Wave animation overlay */
 @keyframes waveAnimation {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateX(0) translateY(0);
         opacity: 0.3;
     }
+
     33% {
         transform: translateX(50px) translateY(-30px);
         opacity: 0.5;
     }
+
     66% {
         transform: translateX(-30px) translateY(50px);
         opacity: 0.4;
@@ -151,7 +165,7 @@ body::after {
 }
 
 [data-theme="dark"] body {
-    background-image: 
+    background-image:
         radial-gradient(at 0% 0%, rgba(129, 140, 248, 0.2) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(167, 139, 250, 0.2) 0px, transparent 50%),
         radial-gradient(at 50% 50%, rgba(99, 102, 241, 0.15) 0px, transparent 50%);
@@ -186,39 +200,33 @@ body::after {
 .wave-1 {
     top: 20%;
     left: -50%;
-    background: repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 50px,
-        rgba(139, 92, 246, 0.6) 50px,
-        rgba(139, 92, 246, 0.6) 100px
-    );
+    background: repeating-linear-gradient(90deg,
+            transparent,
+            transparent 50px,
+            rgba(139, 92, 246, 0.6) 50px,
+            rgba(139, 92, 246, 0.6) 100px);
     animation: waveMove 20s linear infinite;
 }
 
 .wave-2 {
     top: 50%;
     left: -50%;
-    background: repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 60px,
-        rgba(99, 102, 241, 0.5) 60px,
-        rgba(99, 102, 241, 0.5) 120px
-    );
+    background: repeating-linear-gradient(90deg,
+            transparent,
+            transparent 60px,
+            rgba(99, 102, 241, 0.5) 60px,
+            rgba(99, 102, 241, 0.5) 120px);
     animation: waveMove 25s linear infinite reverse;
 }
 
 .wave-3 {
     top: 80%;
     left: -50%;
-    background: repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 70px,
-        rgba(167, 139, 250, 0.4) 70px,
-        rgba(167, 139, 250, 0.4) 140px
-    );
+    background: repeating-linear-gradient(90deg,
+            transparent,
+            transparent 70px,
+            rgba(167, 139, 250, 0.4) 70px,
+            rgba(167, 139, 250, 0.4) 140px);
     animation: waveMove 30s linear infinite;
 }
 
@@ -226,6 +234,7 @@ body::after {
     0% {
         transform: translateX(0);
     }
+
     100% {
         transform: translateX(50%);
     }
@@ -240,37 +249,141 @@ body::after {
 }
 
 /* Rabbits - avoiding switcher areas (left: 0-12%, right: 0-12%, top: 40-60%) - spaced out */
-.rabbit-1 { top: 5%; left: 15%; animation-delay: 0s; }
-.rabbit-2 { top: 10%; right: 20%; animation-delay: 0.3s; }
-.rabbit-3 { top: 8%; left: 50%; animation-delay: 0.6s; }
-.rabbit-4 { top: 12%; right: 40%; animation-delay: 0.9s; }
-.rabbit-5 { top: 18%; left: 25%; animation-delay: 1.2s; }
-.rabbit-6 { top: 15%; right: 60%; animation-delay: 1.5s; }
-.rabbit-7 { top: 22%; left: 70%; animation-delay: 1.8s; }
-.rabbit-8 { top: 25%; right: 35%; animation-delay: 2.1s; }
-.rabbit-9 { top: 32%; left: 20%; animation-delay: 2.4s; }
-.rabbit-10 { top: 28%; right: 75%; animation-delay: 2.7s; }
-.rabbit-11 { top: 30%; left: 45%; animation-delay: 0.2s; }
-.rabbit-12 { top: 22%; right: 30%; animation-delay: 0.5s; }
-.rabbit-13 { top: 70%; left: 60%; animation-delay: 0.8s; }
-.rabbit-14 { top: 72%; right: 45%; animation-delay: 1.1s; }
-.rabbit-15 { top: 78%; left: 25%; animation-delay: 1.4s; }
-.rabbit-16 { top: 75%; right: 70%; animation-delay: 1.7s; }
-.rabbit-17 { top: 82%; left: 80%; animation-delay: 2.0s; }
-.rabbit-18 { top: 88%; right: 35%; animation-delay: 2.3s; }
-.rabbit-19 { top: 90%; left: 50%; animation-delay: 2.6s; }
-.rabbit-20 { top: 92%; right: 60%; animation-delay: 2.9s; }
+.rabbit-1 {
+    top: 5%;
+    left: 15%;
+    animation-delay: 0s;
+}
+
+.rabbit-2 {
+    top: 10%;
+    right: 20%;
+    animation-delay: 0.3s;
+}
+
+.rabbit-3 {
+    top: 8%;
+    left: 50%;
+    animation-delay: 0.6s;
+}
+
+.rabbit-4 {
+    top: 12%;
+    right: 40%;
+    animation-delay: 0.9s;
+}
+
+.rabbit-5 {
+    top: 18%;
+    left: 25%;
+    animation-delay: 1.2s;
+}
+
+.rabbit-6 {
+    top: 15%;
+    right: 60%;
+    animation-delay: 1.5s;
+}
+
+.rabbit-7 {
+    top: 22%;
+    left: 70%;
+    animation-delay: 1.8s;
+}
+
+.rabbit-8 {
+    top: 25%;
+    right: 35%;
+    animation-delay: 2.1s;
+}
+
+.rabbit-9 {
+    top: 32%;
+    left: 20%;
+    animation-delay: 2.4s;
+}
+
+.rabbit-10 {
+    top: 28%;
+    right: 75%;
+    animation-delay: 2.7s;
+}
+
+.rabbit-11 {
+    top: 30%;
+    left: 45%;
+    animation-delay: 0.2s;
+}
+
+.rabbit-12 {
+    top: 22%;
+    right: 30%;
+    animation-delay: 0.5s;
+}
+
+.rabbit-13 {
+    top: 70%;
+    left: 60%;
+    animation-delay: 0.8s;
+}
+
+.rabbit-14 {
+    top: 72%;
+    right: 45%;
+    animation-delay: 1.1s;
+}
+
+.rabbit-15 {
+    top: 78%;
+    left: 25%;
+    animation-delay: 1.4s;
+}
+
+.rabbit-16 {
+    top: 75%;
+    right: 70%;
+    animation-delay: 1.7s;
+}
+
+.rabbit-17 {
+    top: 82%;
+    left: 80%;
+    animation-delay: 2.0s;
+}
+
+.rabbit-18 {
+    top: 88%;
+    right: 35%;
+    animation-delay: 2.3s;
+}
+
+.rabbit-19 {
+    top: 90%;
+    left: 50%;
+    animation-delay: 2.6s;
+}
+
+.rabbit-20 {
+    top: 92%;
+    right: 60%;
+    animation-delay: 2.9s;
+}
 
 @keyframes rabbitJump {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0) rotate(0deg);
     }
+
     25% {
         transform: translateY(-30px) rotate(-5deg);
     }
+
     50% {
         transform: translateY(0) rotate(0deg);
     }
+
     75% {
         transform: translateY(-20px) rotate(5deg);
     }
@@ -285,37 +398,162 @@ body::after {
 }
 
 /* Carrots positioned with spacing from rabbits - avoiding switcher areas */
-.carrot-1 { top: 5%; left: 25%; animation-delay: 0.1s; } /* spaced from rabbit-1 */
-.carrot-2 { top: 10%; right: 30%; animation-delay: 0.4s; } /* spaced from rabbit-2 */
-.carrot-3 { top: 8%; left: 58%; animation-delay: 0.7s; } /* spaced from rabbit-3 */
-.carrot-4 { top: 12%; right: 50%; animation-delay: 1.0s; } /* spaced from rabbit-4 */
-.carrot-5 { top: 18%; left: 38%; animation-delay: 1.3s; } /* spaced from rabbit-5 */
-.carrot-6 { top: 15%; right: 70%; animation-delay: 1.6s; } /* spaced from rabbit-6 */
-.carrot-7 { top: 22%; left: 78%; animation-delay: 1.9s; } /* spaced from rabbit-7 */
-.carrot-8 { top: 25%; right: 45%; animation-delay: 2.2s; } /* spaced from rabbit-8 */
-.carrot-9 { top: 32%; left: 33%; animation-delay: 2.5s; } /* spaced from rabbit-9 */
-.carrot-10 { top: 28%; right: 82%; animation-delay: 2.8s; } /* spaced from rabbit-10 */
-.carrot-11 { top: 30%; left: 53%; animation-delay: 0.3s; } /* spaced from rabbit-11 */
-.carrot-12 { top: 22%; right: 40%; animation-delay: 0.6s; } /* spaced from rabbit-12 */
-.carrot-13 { top: 70%; left: 68%; animation-delay: 0.9s; } /* spaced from rabbit-13 */
-.carrot-14 { top: 72%; right: 55%; animation-delay: 1.2s; } /* spaced from rabbit-14 */
-.carrot-15 { top: 78%; left: 38%; animation-delay: 1.5s; } /* spaced from rabbit-15 */
-.carrot-16 { top: 75%; right: 78%; animation-delay: 1.8s; } /* spaced from rabbit-16 */
-.carrot-17 { top: 82%; left: 88%; animation-delay: 2.1s; } /* spaced from rabbit-17 */
-.carrot-18 { top: 88%; right: 45%; animation-delay: 2.4s; } /* spaced from rabbit-18 */
-.carrot-19 { top: 90%; left: 58%; animation-delay: 2.7s; } /* spaced from rabbit-19 */
-.carrot-20 { top: 92%; right: 70%; animation-delay: 3.0s; } /* spaced from rabbit-20 */
+.carrot-1 {
+    top: 5%;
+    left: 25%;
+    animation-delay: 0.1s;
+}
+
+/* spaced from rabbit-1 */
+.carrot-2 {
+    top: 10%;
+    right: 30%;
+    animation-delay: 0.4s;
+}
+
+/* spaced from rabbit-2 */
+.carrot-3 {
+    top: 8%;
+    left: 58%;
+    animation-delay: 0.7s;
+}
+
+/* spaced from rabbit-3 */
+.carrot-4 {
+    top: 12%;
+    right: 50%;
+    animation-delay: 1.0s;
+}
+
+/* spaced from rabbit-4 */
+.carrot-5 {
+    top: 18%;
+    left: 38%;
+    animation-delay: 1.3s;
+}
+
+/* spaced from rabbit-5 */
+.carrot-6 {
+    top: 15%;
+    right: 70%;
+    animation-delay: 1.6s;
+}
+
+/* spaced from rabbit-6 */
+.carrot-7 {
+    top: 22%;
+    left: 78%;
+    animation-delay: 1.9s;
+}
+
+/* spaced from rabbit-7 */
+.carrot-8 {
+    top: 25%;
+    right: 45%;
+    animation-delay: 2.2s;
+}
+
+/* spaced from rabbit-8 */
+.carrot-9 {
+    top: 32%;
+    left: 33%;
+    animation-delay: 2.5s;
+}
+
+/* spaced from rabbit-9 */
+.carrot-10 {
+    top: 28%;
+    right: 82%;
+    animation-delay: 2.8s;
+}
+
+/* spaced from rabbit-10 */
+.carrot-11 {
+    top: 30%;
+    left: 53%;
+    animation-delay: 0.3s;
+}
+
+/* spaced from rabbit-11 */
+.carrot-12 {
+    top: 22%;
+    right: 40%;
+    animation-delay: 0.6s;
+}
+
+/* spaced from rabbit-12 */
+.carrot-13 {
+    top: 70%;
+    left: 68%;
+    animation-delay: 0.9s;
+}
+
+/* spaced from rabbit-13 */
+.carrot-14 {
+    top: 72%;
+    right: 55%;
+    animation-delay: 1.2s;
+}
+
+/* spaced from rabbit-14 */
+.carrot-15 {
+    top: 78%;
+    left: 38%;
+    animation-delay: 1.5s;
+}
+
+/* spaced from rabbit-15 */
+.carrot-16 {
+    top: 75%;
+    right: 78%;
+    animation-delay: 1.8s;
+}
+
+/* spaced from rabbit-16 */
+.carrot-17 {
+    top: 82%;
+    left: 88%;
+    animation-delay: 2.1s;
+}
+
+/* spaced from rabbit-17 */
+.carrot-18 {
+    top: 88%;
+    right: 45%;
+    animation-delay: 2.4s;
+}
+
+/* spaced from rabbit-18 */
+.carrot-19 {
+    top: 90%;
+    left: 58%;
+    animation-delay: 2.7s;
+}
+
+/* spaced from rabbit-19 */
+.carrot-20 {
+    top: 92%;
+    right: 70%;
+    animation-delay: 3.0s;
+}
+
+/* spaced from rabbit-20 */
 
 @keyframes carrotJumpRotate {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0) rotate(0deg);
     }
+
     25% {
         transform: translateY(-35px) rotate(90deg);
     }
+
     50% {
         transform: translateY(0) rotate(180deg);
     }
+
     75% {
         transform: translateY(-25px) rotate(270deg);
     }
@@ -330,32 +568,152 @@ body::after {
 }
 
 /* 20 boys positioned all over background - running left to right */
-.boy-1 { bottom: 5%; left: 10%; animation: boyRunLeft 12s linear infinite; animation-delay: 0s; }
-.boy-2 { bottom: 8%; right: 15%; animation: boyRunRight 12s linear infinite; animation-delay: 0.5s; }
-.boy-3 { bottom: 12%; left: 25%; animation: boyRunLeft 14s linear infinite; animation-delay: 1s; }
-.boy-4 { bottom: 10%; right: 30%; animation: boyRunRight 13s linear infinite; animation-delay: 1.5s; }
-.boy-5 { bottom: 15%; left: 40%; animation: boyRunLeft 15s linear infinite; animation-delay: 2s; }
-.boy-6 { bottom: 18%; right: 45%; animation: boyRunRight 11s linear infinite; animation-delay: 2.5s; }
-.boy-7 { bottom: 20%; left: 55%; animation: boyRunLeft 13s linear infinite; animation-delay: 3s; }
-.boy-8 { bottom: 22%; right: 60%; animation: boyRunRight 14s linear infinite; animation-delay: 3.5s; }
-.boy-9 { bottom: 25%; left: 70%; animation: boyRunLeft 12s linear infinite; animation-delay: 4s; }
-.boy-10 { bottom: 28%; right: 75%; animation: boyRunRight 15s linear infinite; animation-delay: 4.5s; }
-.boy-11 { bottom: 30%; left: 20%; animation: boyRunLeft 11s linear infinite; animation-delay: 0.2s; }
-.boy-12 { bottom: 32%; right: 25%; animation: boyRunRight 13s linear infinite; animation-delay: 0.7s; }
-.boy-13 { bottom: 35%; left: 50%; animation: boyRunLeft 14s linear infinite; animation-delay: 1.2s; }
-.boy-14 { bottom: 38%; right: 55%; animation: boyRunRight 12s linear infinite; animation-delay: 1.7s; }
-.boy-15 { bottom: 40%; left: 65%; animation: boyRunLeft 13s linear infinite; animation-delay: 2.2s; }
-.boy-16 { bottom: 42%; right: 70%; animation: boyRunRight 15s linear infinite; animation-delay: 2.7s; }
-.boy-17 { bottom: 45%; left: 15%; animation: boyRunLeft 11s linear infinite; animation-delay: 3.2s; }
-.boy-18 { bottom: 48%; right: 20%; animation: boyRunRight 14s linear infinite; animation-delay: 3.7s; }
-.boy-19 { bottom: 50%; left: 80%; animation: boyRunLeft 12s linear infinite; animation-delay: 4.2s; }
-.boy-20 { bottom: 52%; right: 85%; animation: boyRunRight 13s linear infinite; animation-delay: 4.7s; }
+.boy-1 {
+    bottom: 5%;
+    left: 10%;
+    animation: boyRunLeft 12s linear infinite;
+    animation-delay: 0s;
+}
+
+.boy-2 {
+    bottom: 8%;
+    right: 15%;
+    animation: boyRunRight 12s linear infinite;
+    animation-delay: 0.5s;
+}
+
+.boy-3 {
+    bottom: 12%;
+    left: 25%;
+    animation: boyRunLeft 14s linear infinite;
+    animation-delay: 1s;
+}
+
+.boy-4 {
+    bottom: 10%;
+    right: 30%;
+    animation: boyRunRight 13s linear infinite;
+    animation-delay: 1.5s;
+}
+
+.boy-5 {
+    bottom: 15%;
+    left: 40%;
+    animation: boyRunLeft 15s linear infinite;
+    animation-delay: 2s;
+}
+
+.boy-6 {
+    bottom: 18%;
+    right: 45%;
+    animation: boyRunRight 11s linear infinite;
+    animation-delay: 2.5s;
+}
+
+.boy-7 {
+    bottom: 20%;
+    left: 55%;
+    animation: boyRunLeft 13s linear infinite;
+    animation-delay: 3s;
+}
+
+.boy-8 {
+    bottom: 22%;
+    right: 60%;
+    animation: boyRunRight 14s linear infinite;
+    animation-delay: 3.5s;
+}
+
+.boy-9 {
+    bottom: 25%;
+    left: 70%;
+    animation: boyRunLeft 12s linear infinite;
+    animation-delay: 4s;
+}
+
+.boy-10 {
+    bottom: 28%;
+    right: 75%;
+    animation: boyRunRight 15s linear infinite;
+    animation-delay: 4.5s;
+}
+
+.boy-11 {
+    bottom: 30%;
+    left: 20%;
+    animation: boyRunLeft 11s linear infinite;
+    animation-delay: 0.2s;
+}
+
+.boy-12 {
+    bottom: 32%;
+    right: 25%;
+    animation: boyRunRight 13s linear infinite;
+    animation-delay: 0.7s;
+}
+
+.boy-13 {
+    bottom: 35%;
+    left: 50%;
+    animation: boyRunLeft 14s linear infinite;
+    animation-delay: 1.2s;
+}
+
+.boy-14 {
+    bottom: 38%;
+    right: 55%;
+    animation: boyRunRight 12s linear infinite;
+    animation-delay: 1.7s;
+}
+
+.boy-15 {
+    bottom: 40%;
+    left: 65%;
+    animation: boyRunLeft 13s linear infinite;
+    animation-delay: 2.2s;
+}
+
+.boy-16 {
+    bottom: 42%;
+    right: 70%;
+    animation: boyRunRight 15s linear infinite;
+    animation-delay: 2.7s;
+}
+
+.boy-17 {
+    bottom: 45%;
+    left: 15%;
+    animation: boyRunLeft 11s linear infinite;
+    animation-delay: 3.2s;
+}
+
+.boy-18 {
+    bottom: 48%;
+    right: 20%;
+    animation: boyRunRight 14s linear infinite;
+    animation-delay: 3.7s;
+}
+
+.boy-19 {
+    bottom: 50%;
+    left: 80%;
+    animation: boyRunLeft 12s linear infinite;
+    animation-delay: 4.2s;
+}
+
+.boy-20 {
+    bottom: 52%;
+    right: 85%;
+    animation: boyRunRight 13s linear infinite;
+    animation-delay: 4.7s;
+}
 
 @keyframes boyRunLeft {
     0% {
         left: -100px;
         transform: scaleX(1);
     }
+
     100% {
         left: calc(100% + 100px);
         transform: scaleX(1);
@@ -367,6 +725,7 @@ body::after {
         right: -100px;
         transform: scaleX(-1);
     }
+
     100% {
         right: calc(100% + 100px);
         transform: scaleX(-1);
@@ -429,26 +788,28 @@ body::after {
 }
 
 .bg-animation[data-animation="gradient"] {
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 1) 0%, 
-        rgba(255, 192, 203, 0.95) 15%,
-        rgba(255, 105, 180, 1) 30%,
-        rgba(186, 85, 211, 1) 50%,
-        rgba(138, 43, 226, 0.95) 70%,
-        rgba(186, 85, 211, 1) 85%,
-        rgba(255, 192, 203, 0.95) 100%);
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 1) 0%,
+            rgba(255, 192, 203, 0.95) 15%,
+            rgba(255, 105, 180, 1) 30%,
+            rgba(186, 85, 211, 1) 50%,
+            rgba(138, 43, 226, 0.95) 70%,
+            rgba(186, 85, 211, 1) 85%,
+            rgba(255, 192, 203, 0.95) 100%);
     background-size: 400% 400%;
     animation: gradientMove 18s ease infinite;
 }
 
 @keyframes gradientMove {
-    0% { 
+    0% {
         background-position: 0% 0%;
     }
-    50% { 
+
+    50% {
         background-position: 100% 100%;
     }
-    100% { 
+
+    100% {
         background-position: 0% 0%;
     }
 }
@@ -514,42 +875,56 @@ body::after {
 }
 
 @keyframes orbFloat1 {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translate(0, 0) scale(1);
     }
+
     25% {
         transform: translate(150px, 100px) scale(1.1);
     }
+
     50% {
         transform: translate(80px, 200px) scale(0.9);
     }
+
     75% {
         transform: translate(-100px, 150px) scale(1.05);
     }
 }
 
 @keyframes orbFloat2 {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translate(0, 0) scale(1);
     }
+
     25% {
         transform: translate(-150px, -100px) scale(0.9);
     }
+
     50% {
         transform: translate(-80px, -200px) scale(1.2);
     }
+
     75% {
         transform: translate(100px, -150px) scale(1.05);
     }
 }
 
 @keyframes orbFloat3 {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translate(-50%, -50%) scale(1) rotate(0deg);
     }
+
     33% {
         transform: translate(-45%, -55%) scale(1.1) rotate(120deg);
     }
+
     66% {
         transform: translate(-55%, -45%) scale(0.95) rotate(240deg);
     }
@@ -586,7 +961,7 @@ body::after {
     width: 65px;
     height: 65px;
     background: radial-gradient(circle, rgba(255, 255, 0, 1) 0%, rgba(255, 255, 0, 1) 40%, rgba(255, 215, 0, 0.9) 60%, rgba(255, 215, 0, 0) 80%);
-    box-shadow: 
+    box-shadow:
         0 0 60px rgba(255, 255, 0, 1),
         0 0 120px rgba(255, 255, 0, 0.9),
         0 0 180px rgba(255, 215, 0, 0.7),
@@ -597,7 +972,7 @@ body::after {
     width: 75px;
     height: 75px;
     background: radial-gradient(circle, rgba(255, 20, 147, 1) 0%, rgba(255, 20, 147, 1) 40%, rgba(255, 20, 147, 0.9) 60%, rgba(255, 20, 147, 0) 80%);
-    box-shadow: 
+    box-shadow:
         0 0 60px rgba(255, 20, 147, 1),
         0 0 120px rgba(255, 20, 147, 0.9),
         0 0 180px rgba(255, 105, 180, 0.7),
@@ -608,7 +983,7 @@ body::after {
     width: 85px;
     height: 85px;
     background: radial-gradient(circle, rgba(148, 0, 211, 1) 0%, rgba(148, 0, 211, 1) 40%, rgba(138, 43, 226, 0.9) 60%, rgba(138, 43, 226, 0) 80%);
-    box-shadow: 
+    box-shadow:
         0 0 60px rgba(148, 0, 211, 1),
         0 0 120px rgba(148, 0, 211, 0.9),
         0 0 180px rgba(138, 43, 226, 0.7),
@@ -619,7 +994,7 @@ body::after {
     width: 60px;
     height: 60px;
     background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 40%, rgba(255, 255, 255, 0.95) 60%, rgba(255, 255, 255, 0) 80%);
-    box-shadow: 
+    box-shadow:
         0 0 60px rgba(255, 255, 255, 1),
         0 0 120px rgba(255, 255, 255, 1),
         0 0 180px rgba(255, 255, 255, 0.9),
@@ -628,59 +1003,213 @@ body::after {
 
 /* Scatter lights all over background */
 /* Completely mixed colors throughout background - no clustering */
-.light-1 { top: 5%; left: 12%; animation-delay: 0s; }      /* yellow */
-.light-2 { top: 8%; right: 8%; animation-delay: 2s; }      /* pink */
-.light-3 { top: 12%; left: 55%; animation-delay: 4s; }     /* violet */
-.light-4 { top: 15%; right: 45%; animation-delay: 1s; }   /* white */
-.light-5 { top: 18%; left: 30%; animation-delay: 3s; }     /* yellow */
-.light-6 { top: 22%; right: 25%; animation-delay: 5s; }    /* pink */
-.light-7 { top: 25%; left: 70%; animation-delay: 2.5s; }   /* violet */
-.light-8 { top: 28%; right: 60%; animation-delay: 4.5s; }  /* white */
-.light-9 { top: 32%; left: 15%; animation-delay: 1.5s; }   /* yellow */
-.light-10 { top: 35%; right: 35%; animation-delay: 3.5s; } /* pink */
-.light-11 { top: 38%; left: 50%; animation-delay: 0.5s; }  /* violet */
-.light-12 { top: 42%; right: 15%; animation-delay: 6s; }   /* white */
-.light-13 { top: 45%; left: 75%; animation-delay: 1.8s; }  /* yellow */
-.light-14 { top: 48%; right: 55%; animation-delay: 3.2s; } /* white */
-.light-15 { top: 52%; left: 25%; animation-delay: 5.5s; }   /* yellow */
-.light-16 { top: 55%; right: 70%; animation-delay: 2.2s; }  /* white */
-.light-17 { top: 58%; left: 40%; animation-delay: 4.8s; }   /* yellow */
-.light-18 { top: 62%; right: 20%; animation-delay: 1.2s; } /* white */
-.light-19 { top: 65%; left: 65%; animation-delay: 3.8s; }  /* yellow */
-.light-20 { top: 68%; right: 50%; animation-delay: 5.2s; } /* white */
-.light-21 { top: 72%; left: 20%; animation-delay: 2.8s; }  /* pink */
-.light-22 { top: 75%; right: 75%; animation-delay: 4.3s; } /* violet */
-.light-23 { top: 78%; left: 45%; animation-delay: 1.7s; }   /* yellow */
-.light-24 { top: 82%; right: 30%; animation-delay: 3.9s; }  /* white */
+.light-1 {
+    top: 5%;
+    left: 12%;
+    animation-delay: 0s;
+}
+
+/* yellow */
+.light-2 {
+    top: 8%;
+    right: 8%;
+    animation-delay: 2s;
+}
+
+/* pink */
+.light-3 {
+    top: 12%;
+    left: 55%;
+    animation-delay: 4s;
+}
+
+/* violet */
+.light-4 {
+    top: 15%;
+    right: 45%;
+    animation-delay: 1s;
+}
+
+/* white */
+.light-5 {
+    top: 18%;
+    left: 30%;
+    animation-delay: 3s;
+}
+
+/* yellow */
+.light-6 {
+    top: 22%;
+    right: 25%;
+    animation-delay: 5s;
+}
+
+/* pink */
+.light-7 {
+    top: 25%;
+    left: 70%;
+    animation-delay: 2.5s;
+}
+
+/* violet */
+.light-8 {
+    top: 28%;
+    right: 60%;
+    animation-delay: 4.5s;
+}
+
+/* white */
+.light-9 {
+    top: 32%;
+    left: 15%;
+    animation-delay: 1.5s;
+}
+
+/* yellow */
+.light-10 {
+    top: 35%;
+    right: 35%;
+    animation-delay: 3.5s;
+}
+
+/* pink */
+.light-11 {
+    top: 38%;
+    left: 50%;
+    animation-delay: 0.5s;
+}
+
+/* violet */
+.light-12 {
+    top: 42%;
+    right: 15%;
+    animation-delay: 6s;
+}
+
+/* white */
+.light-13 {
+    top: 45%;
+    left: 75%;
+    animation-delay: 1.8s;
+}
+
+/* yellow */
+.light-14 {
+    top: 48%;
+    right: 55%;
+    animation-delay: 3.2s;
+}
+
+/* white */
+.light-15 {
+    top: 52%;
+    left: 25%;
+    animation-delay: 5.5s;
+}
+
+/* yellow */
+.light-16 {
+    top: 55%;
+    right: 70%;
+    animation-delay: 2.2s;
+}
+
+/* white */
+.light-17 {
+    top: 58%;
+    left: 40%;
+    animation-delay: 4.8s;
+}
+
+/* yellow */
+.light-18 {
+    top: 62%;
+    right: 20%;
+    animation-delay: 1.2s;
+}
+
+/* white */
+.light-19 {
+    top: 65%;
+    left: 65%;
+    animation-delay: 3.8s;
+}
+
+/* yellow */
+.light-20 {
+    top: 68%;
+    right: 50%;
+    animation-delay: 5.2s;
+}
+
+/* white */
+.light-21 {
+    top: 72%;
+    left: 20%;
+    animation-delay: 2.8s;
+}
+
+/* pink */
+.light-22 {
+    top: 75%;
+    right: 75%;
+    animation-delay: 4.3s;
+}
+
+/* violet */
+.light-23 {
+    top: 78%;
+    left: 45%;
+    animation-delay: 1.7s;
+}
+
+/* yellow */
+.light-24 {
+    top: 82%;
+    right: 30%;
+    animation-delay: 3.9s;
+}
+
+/* white */
 
 @keyframes lightFloat {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translate(0, 0) scale(1);
     }
+
     25% {
         transform: translate(30px, 40px) scale(1.1);
     }
+
     50% {
         transform: translate(-25px, 60px) scale(0.9);
     }
+
     75% {
         transform: translate(-40px, 30px) scale(1.05);
     }
 }
 
 @keyframes lightPulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
         filter: blur(20px) brightness(3) saturate(1.5);
     }
+
     25% {
         opacity: 0.7;
         filter: blur(25px) brightness(2.5) saturate(1.3);
     }
+
     50% {
         opacity: 0.4;
         filter: blur(30px) brightness(2) saturate(1.2);
     }
+
     75% {
         opacity: 0.7;
         filter: blur(25px) brightness(2.5) saturate(1.3);
@@ -693,7 +1222,7 @@ body::after {
 
 [data-theme="dark"] .light-yellow {
     background: radial-gradient(circle, rgba(255, 255, 0, 1) 0%, rgba(255, 255, 0, 1) 40%, rgba(255, 255, 0, 0.9) 60%, rgba(255, 255, 0, 0) 80%);
-    box-shadow: 
+    box-shadow:
         0 0 80px rgba(255, 255, 0, 1),
         0 0 160px rgba(255, 255, 0, 1),
         0 0 240px rgba(255, 215, 0, 0.9),
@@ -702,7 +1231,7 @@ body::after {
 
 [data-theme="dark"] .light-pink {
     background: radial-gradient(circle, rgba(255, 105, 180, 1) 0%, rgba(255, 105, 180, 1) 40%, rgba(255, 105, 180, 0.9) 60%, rgba(255, 105, 180, 0) 80%);
-    box-shadow: 
+    box-shadow:
         0 0 80px rgba(255, 105, 180, 1),
         0 0 160px rgba(255, 105, 180, 1),
         0 0 240px rgba(255, 20, 147, 0.9),
@@ -711,7 +1240,7 @@ body::after {
 
 [data-theme="dark"] .light-violet {
     background: radial-gradient(circle, rgba(148, 0, 211, 1) 0%, rgba(148, 0, 211, 1) 40%, rgba(148, 0, 211, 0.9) 60%, rgba(148, 0, 211, 0) 80%);
-    box-shadow: 
+    box-shadow:
         0 0 80px rgba(148, 0, 211, 1),
         0 0 160px rgba(148, 0, 211, 1),
         0 0 240px rgba(138, 43, 226, 0.9),
@@ -720,7 +1249,7 @@ body::after {
 
 [data-theme="dark"] .light-white {
     background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 40%, rgba(255, 255, 255, 0.95) 60%, rgba(255, 255, 255, 0) 80%);
-    box-shadow: 
+    box-shadow:
         0 0 80px rgba(255, 255, 255, 1),
         0 0 160px rgba(255, 255, 255, 1),
         0 0 240px rgba(255, 255, 255, 1),
@@ -736,7 +1265,7 @@ body::after {
     flex-shrink: 0;
 }
 
-.header-controls > * {
+.header-controls>* {
     pointer-events: all;
 }
 
@@ -870,6 +1399,818 @@ body::after {
 
 .exercises-tab:active {
     transform: scale(1);
+}
+
+/* Lessons / Dashboard Tabs (reuse main tab styling) */
+.lessons-tab,
+.progress-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px var(--shadow), 0 0 0 1px var(--glass-border);
+    position: relative;
+    z-index: 100000;
+    white-space: nowrap;
+}
+
+.lessons-tab:hover,
+.progress-tab:hover {
+    background: var(--accent-gradient);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px var(--shadow-lg), 0 0 0 1px var(--accent-color);
+}
+
+.lessons-tab:active,
+.progress-tab:active {
+    transform: scale(1);
+}
+
+/* Lesson Builder basic layout */
+.lesson-editor-layout {
+    display: grid;
+    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.lesson-editor-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lesson-panel {
+    background: var(--glass-bg);
+    border-radius: 18px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 24px var(--shadow), 0 0 0 1px rgba(148, 163, 253, 0.18);
+    padding: 12px 12px 14px;
+}
+
+.lesson-list-panel {
+    max-height: 230px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.lesson-blocks-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.lesson-subtitle {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.lesson-block-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.lesson-block-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(148, 163, 253, 0.35);
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.lesson-block-list-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1);
+}
+
+.lesson-block-list-item.selected {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.7);
+    background: linear-gradient(135deg, rgba(129, 140, 248, 0.1), rgba(209, 213, 255, 0.6));
+}
+
+.lesson-block-list-actions button {
+    font-size: 11px;
+    padding: 2px 6px;
+    margin-left: 4px;
+}
+
+.lesson-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.lesson-toolbar-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 253, 0.4);
+    background: radial-gradient(circle at 0 0, rgba(191, 219, 254, 0.9), rgba(149, 196, 253, 0.7));
+    cursor: pointer;
+    color: #0f172a;
+    box-shadow: 0 4px 14px rgba(148, 163, 253, 0.45);
+    white-space: nowrap;
+}
+
+.lesson-toolbar-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(129, 140, 248, 0.55);
+}
+
+.lesson-toolbar-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(129, 140, 248, 0.4);
+}
+
+.lesson-primary-btn {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(22, 163, 74, 0.5);
+}
+
+.lesson-primary-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(22, 163, 74, 0.6);
+}
+
+.lesson-primary-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.45);
+}
+
+.lesson-json-output {
+    width: 100%;
+    min-height: 160px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    padding: 8px 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 11px;
+    background: rgba(15, 23, 42, 0.7);
+    color: #e5e7eb;
+}
+
+.lesson-editor-main {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lesson-editor-main-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+}
+
+.lesson-block-editor,
+.lesson-block-editor-empty {
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    padding: 12px;
+    min-height: 220px;
+    font-size: 13px;
+}
+
+.lesson-block-editor-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.lesson-field {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.lesson-field-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.lesson-block-input,
+.lesson-block-title-input,
+.lesson-title-input {
+    width: 100%;
+    padding: 6px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    font-size: 13px;
+}
+
+.lesson-block-textarea {
+    width: 100%;
+    min-height: 80px;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    padding: 6px 10px;
+    font-size: 13px;
+}
+
+.lesson-preview-container {
+    background: var(--glass-bg);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    padding: 16px 14px;
+    min-height: 220px;
+    box-shadow: 0 10px 28px var(--shadow-lg);
+}
+
+.lesson-materials-photo-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    max-height: 180px;
+    overflow-y: auto;
+    padding: 4px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.03);
+}
+
+.lesson-materials-photo-item {
+    border: none;
+    padding: 4px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+    transition: all 0.18s ease;
+}
+
+.lesson-materials-photo-item:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 4px 14px rgba(129, 140, 248, 0.45);
+}
+
+.lesson-materials-photo-item.selected {
+    outline: 2px solid var(--accent-color);
+    box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.9), 0 4px 16px rgba(129, 140, 248, 0.6);
+}
+
+.lesson-materials-photo-thumb {
+    width: 100%;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 4px;
+}
+
+.lesson-materials-photo-name {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+}
+
+.lesson-field-info {
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.04);
+}
+
+.lesson-preview-block {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--glass-border);
+}
+
+.lesson-preview-image {
+    max-width: 100%;
+    border-radius: 12px;
+}
+
+.lesson-preview-gap-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.lesson-preview-gap-input {
+    flex: 1;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+}
+
+.lesson-preview-quiz-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin-top: 4px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    background: var(--bg-tertiary);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.lesson-preview-caption {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.lesson-progress-bar {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--bg-tertiary);
+    overflow: hidden;
+}
+
+.lesson-progress-bar-fill {
+    height: 100%;
+    width: 0;
+    background: var(--accent-gradient);
+    transition: width 0.3s ease;
+}
+
+.lesson-progress-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.lesson-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+}
+
+.lesson-preview-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.lesson-preview-progress-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.lesson-student-section-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--accent-gradient);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(129, 140, 248, 0.3);
+    margin-left: auto;
+}
+
+.lesson-student-section-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(129, 140, 248, 0.4);
+}
+
+/* Student Section Styles */
+.student-lessons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.student-lessons-empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-secondary);
+    background: var(--glass-bg);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+}
+
+.student-lesson-card {
+    background: var(--glass-bg);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    padding: 24px;
+    box-shadow: 0 4px 16px var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.student-lesson-card:hover {
+    box-shadow: 0 8px 24px var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.student-lesson-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--glass-border);
+}
+
+.student-lesson-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 8px 0;
+}
+
+.student-lesson-meta {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.student-lesson-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.student-lesson-empty {
+    text-align: center;
+    padding: 32px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.student-lesson-block {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.student-lesson-block h4 {
+    margin: 0 0 12px 0;
+    font-size: 18px;
+    color: var(--text-primary);
+}
+
+.student-lesson-text {
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+.student-lesson-text p {
+    margin: 8px 0;
+}
+
+.student-lesson-image {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 0;
+    box-shadow: 0 4px 12px var(--shadow);
+    display: block;
+}
+
+.student-lesson-image-text-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
+}
+
+.student-lesson-image-text-wrapper .student-lesson-block-image {
+    flex: 0 0 33.33%;
+    width: 33.33%;
+    min-width: 200px;
+    max-width: 33.33%;
+    order: 1;
+}
+
+.student-lesson-image-text-wrapper .student-lesson-block-image .student-lesson-image {
+    width: 100%;
+    max-width: 100%;
+}
+
+.student-lesson-image-text-wrapper .student-lesson-block-text {
+    flex: 1;
+    min-width: 250px;
+    order: 2;
+}
+
+/* Standalone image blocks (not in wrapper) - always on left, 33% width */
+.student-lesson-content > .student-lesson-block-image {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.student-lesson-content > .student-lesson-block-image .student-lesson-image {
+    max-width: 33.33%;
+    width: auto;
+}
+
+.student-lesson-caption {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    font-style: italic;
+}
+
+.student-lesson-video-container {
+    margin: 12px 0;
+}
+
+.student-lesson-video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    border: none;
+}
+
+.student-lesson-video-link {
+    display: inline-block;
+    padding: 12px 20px;
+    background: var(--accent-gradient);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.student-lesson-video-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(129, 140, 248, 0.4);
+}
+
+.student-lesson-video-info {
+    padding: 12px;
+    background: rgba(15, 23, 42, 0.05);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.student-lesson-quiz-question {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 12px 0;
+}
+
+.student-lesson-quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.student-lesson-quiz-option {
+    padding: 12px 16px;
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.student-lesson-quiz-option:hover:not(:disabled) {
+    background: var(--accent-gradient);
+    color: white;
+    border-color: var(--accent-color);
+    transform: translateX(4px);
+}
+
+.student-lesson-quiz-option:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.student-lesson-quiz-option.correct {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-color: #10b981;
+}
+
+.student-lesson-quiz-option.incorrect {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border-color: #ef4444;
+}
+
+.student-lesson-vocab-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.student-lesson-vocab-container.vocab-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.student-lesson-vocab-item {
+    padding: 12px;
+    background: var(--glass-bg);
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+}
+
+.student-lesson-vocab-example {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    font-style: italic;
+}
+
+.student-lesson-gap-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.student-lesson-gap-item {
+    padding: 16px;
+    background: var(--glass-bg);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.student-lesson-gap-prompt {
+    font-size: 15px;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.student-lesson-gap-input-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.student-lesson-gap-input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 2px solid var(--glass-border);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.student-lesson-gap-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
+}
+
+.student-lesson-gap-input:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.student-lesson-gap-input.correct {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.student-lesson-gap-input.incorrect {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.student-lesson-gap-check-btn {
+    padding: 10px 20px;
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.student-lesson-gap-check-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(129, 140, 248, 0.4);
+}
+
+.student-lesson-gap-check-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.student-lesson-gap-check-btn.correct {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.student-lesson-gap-check-btn.incorrect {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.student-lesson-progress-bar {
+    margin-top: 20px;
+    height: 6px;
+    background: var(--bg-tertiary);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.student-lesson-progress-fill {
+    height: 100%;
+    background: var(--accent-gradient);
+    transition: width 0.3s ease;
+}
+
+@media (max-width: 900px) {
+    .lesson-editor-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .lesson-editor-main-inner {
+        grid-template-columns: 1fr;
+    }
+
+    .lesson-preview-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .lesson-student-section-btn {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .student-lesson-vocab-container.vocab-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .student-lesson-image-text-wrapper {
+        flex-wrap: wrap;
+    }
+
+    .student-lesson-image-text-wrapper .student-lesson-block-image {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .student-lesson-image-text-wrapper .student-lesson-block-text {
+        flex: 0 0 100%;
+        width: 100%;
+    }
 }
 
 /* Exercise Tabs Preview on Home Page */
@@ -1417,6 +2758,7 @@ body::after {
         opacity: 0;
         transform: scale(0.95) translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -1428,6 +2770,7 @@ body::after {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1449,9 +2792,12 @@ body::after {
 }
 
 @keyframes bounce {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scale(1.1) rotate(5deg) translateY(0);
     }
+
     50% {
         transform: scale(1.15) rotate(5deg) translateY(-5px);
     }
@@ -1608,6 +2954,7 @@ body::after {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1921,6 +3268,7 @@ body::after {
 }
 
 @media (max-width: 480px) {
+
     .platform-name,
     .platform-title {
         font-size: 24px;
@@ -2050,6 +3398,7 @@ body::after {
         transform: translateX(100%);
         opacity: 0;
     }
+
     to {
         transform: translateX(0);
         opacity: 1;
@@ -2061,6 +3410,7 @@ body::after {
         transform: translateX(0);
         opacity: 1;
     }
+
     to {
         transform: translateX(100%);
         opacity: 0;

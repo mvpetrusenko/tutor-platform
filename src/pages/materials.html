@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Materials - Tutoring Platform</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="materials.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/materials.css">
 </head>
+
 <body data-theme="light">
     <!-- Animated Background Elements -->
     <div class="bg-animation" id="bgAnimation" data-animation="none">
@@ -108,8 +110,7 @@
             <h1 class="platform-title">Tutoring Platform</h1>
             <div class="header-controls">
                 <div class="animation-switcher-container">
-                    <button class="animation-switcher" id="animationSwitcher"
-                            aria-label="Change background animation">
+                    <button class="animation-switcher" id="animationSwitcher" aria-label="Change background animation">
                         <span class="animation-icon">🎬</span>
                     </button>
                     <div class="animation-menu" id="animationMenu">
@@ -132,6 +133,12 @@
                 </a>
                 <a href="reference.html" class="reference-tab">
                     <span>Reference</span>
+                </a>
+                <a href="lessons.html" class="lessons-tab">
+                    <span>Lessons</span>
+                </a>
+                <a href="progress.html" class="progress-tab">
+                    <span>Dashboard</span>
                 </a>
                 <button class="theme-switcher" id="themeSwitcher" aria-label="Toggle theme">
                     <span class="theme-icon">🌙</span>
@@ -190,7 +197,7 @@
             <!-- Saved Materials Display -->
             <div class="materials-library">
                 <h3 class="library-title">Saved Materials</h3>
-                
+
                 <!-- Photos -->
                 <div class="material-category">
                     <h4 class="category-title">📷 Photos</h4>
@@ -225,8 +232,10 @@
     <!-- Modern Alert Container -->
     <div id="alertContainer" class="alert-container"></div>
 
-    <script src="script.js"></script>
-    <script src="exercises.js"></script>
-    <script src="materials.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/exercises.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/materials.js"></script>
 </body>
+
 </html>

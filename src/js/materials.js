@@ -15,12 +15,25 @@ function getMaterials() {
     };
 }
 
-// Save materials to localStorage
-function saveMaterials() {
+// Save materials to localStorage and backend
+async function saveMaterials() {
     localStorage.setItem('materialsPhotos', JSON.stringify(materials.photos));
     localStorage.setItem('materialsTexts', JSON.stringify(materials.texts));
     localStorage.setItem('materialsExercises', JSON.stringify(materials.exercises));
     localStorage.setItem('materialsHomework', JSON.stringify(materials.homework));
+    
+    // Sync to backend
+    if (window.apiService) {
+        try {
+            for (const type of ['photos', 'texts', 'exercises', 'homework']) {
+                for (const material of materials[type]) {
+                    await window.apiService.saveMaterialToBackend(type, material);
+                }
+            }
+        } catch (error) {
+            console.error('Error syncing materials to backend:', error);
+        }
+    }
 }
 
 // Reload materials from localStorage
@@ -128,19 +141,29 @@ document.getElementById('materialPhotoUpload').addEventListener('change', (e) =>
     files.forEach(file => {
         if (file.type.startsWith('image/')) {
             const reader = new FileReader();
-            reader.onload = (event) => {
-                const material = {
-                    id: Date.now() + Math.random(),
-                    name: file.name,
-                    data: event.target.result,
-                    type: 'image',
-                    date: new Date().toLocaleDateString()
-                };
-                materials.photos.push(material);
-                saveMaterials();
-                displayMaterials();
-                showAlert('success', 'Saved', `Photo "${file.name}" uploaded and saved successfully!`);
+        reader.onload = async (event) => {
+            const material = {
+                id: Date.now() + Math.random(),
+                name: file.name,
+                data: event.target.result,
+                type: 'image',
+                date: new Date().toLocaleDateString()
             };
+            materials.photos.push(material);
+            await saveMaterials();
+            
+            // Sync to backend
+            if (window.apiService) {
+                try {
+                    await window.apiService.saveMaterialToBackend('photos', material);
+                } catch (error) {
+                    console.error('Error syncing photo to backend:', error);
+                }
+            }
+            
+            displayMaterials();
+            showAlert('success', 'Saved', `Photo "${file.name}" uploaded and saved successfully!`);
+        };
             reader.readAsDataURL(file);
         }
     });
@@ -175,7 +198,7 @@ document.getElementById('materialExerciseUpload').addEventListener('change', (e)
     const files = Array.from(e.target.files);
     files.forEach(file => {
         const reader = new FileReader();
-        reader.onload = (event) => {
+        reader.onload = async (event) => {
             const material = {
                 id: Date.now() + Math.random(),
                 name: file.name,
@@ -184,7 +207,17 @@ document.getElementById('materialExerciseUpload').addEventListener('change', (e)
                 date: new Date().toLocaleDateString()
             };
             materials.exercises.push(material);
-            saveMaterials();
+            await saveMaterials();
+            
+            // Sync to backend
+            if (window.apiService) {
+                try {
+                    await window.apiService.saveMaterialToBackend('exercises', material);
+                } catch (error) {
+                    console.error('Error syncing exercise to backend:', error);
+                }
+            }
+            
             displayMaterials();
             showAlert('success', 'Saved', `Exercise "${file.name}" uploaded and saved successfully!`);
         };
@@ -198,7 +231,7 @@ document.getElementById('materialHomeworkUpload').addEventListener('change', (e)
     const files = Array.from(e.target.files);
     files.forEach(file => {
         const reader = new FileReader();
-        reader.onload = (event) => {
+        reader.onload = async (event) => {
             const material = {
                 id: Date.now() + Math.random(),
                 name: file.name,
@@ -207,7 +240,17 @@ document.getElementById('materialHomeworkUpload').addEventListener('change', (e)
                 date: new Date().toLocaleDateString()
             };
             materials.homework.push(material);
-            saveMaterials();
+            await saveMaterials();
+            
+            // Sync to backend
+            if (window.apiService) {
+                try {
+                    await window.apiService.saveMaterialToBackend('homework', material);
+                } catch (error) {
+                    console.error('Error syncing homework to backend:', error);
+                }
+            }
+            
             displayMaterials();
             showAlert('success', 'Saved', `Homework "${file.name}" uploaded and saved successfully!`);
         };
@@ -331,6 +374,15 @@ function selectMaterialForHomePage(type, id) {
     // Add to selected materials
     currentSelected.push(material);
     localStorage.setItem(selectedKey, JSON.stringify(currentSelected));
+    
+    // Sync to backend
+    if (window.apiService) {
+        try {
+            window.apiService.saveSelectedMaterialsToBackend(type, currentSelected);
+        } catch (error) {
+            console.error('Error syncing selected materials to backend:', error);
+        }
+    }
 
     showAlert('success', 'Selected', `"${material.name}" has been added to the home page. You can now use it in the "${type === 'photos' ? 'Download Photo' : type === 'texts' ? 'Choose Text' : type === 'exercises' ? 'Choose Exercise' : 'Choose Homework'}" section.`);
 }

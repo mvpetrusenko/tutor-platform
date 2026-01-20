@@ -38,18 +38,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // State
     let questions = [];
     let currentTest = null;
+    let currentTestName = null;
     let currentQuestionIndex = 0;
     let userAnswers = [];
     let testResults = [];
     let savedTests = [];
     
-    // Load saved tests from localStorage
-    function loadSavedTests() {
-        const saved = localStorage.getItem('savedTests');
-        if (saved) {
-            savedTests = JSON.parse(saved);
-            displaySavedTests();
+    // Load saved tests from localStorage and backend
+    async function loadSavedTests() {
+        savedTests = JSON.parse(localStorage.getItem('savedTests') || '[]');
+        
+        // Load from backend if available
+        if (window.apiService) {
+            try {
+                const backendTests = await window.apiService.getTestsFromBackend();
+                if (backendTests && backendTests.length > 0) {
+                    // Merge backend tests with local
+                    const merged = [...backendTests];
+                    savedTests.forEach(local => {
+                        if (!merged.find(t => t.id === local.id || t.name === local.name)) {
+                            merged.push(local);
+                        }
+                    });
+                    savedTests = merged;
+                    localStorage.setItem('savedTests', JSON.stringify(savedTests));
+                }
+            } catch (error) {
+                console.error('Error loading tests from backend:', error);
+            }
         }
+        
+        displaySavedTests();
     }
     
     // Save tests to localStorage
@@ -133,9 +152,20 @@ document.addEventListener('DOMContentLoaded', () => {
         savedTestsContainer.querySelectorAll('.delete-test-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const index = parseInt(e.target.dataset.index);
-                showAlert('warning', 'Delete Test', `Are you sure you want to delete "${savedTests[index].name}"?`, () => {
+                showAlert('warning', 'Delete Test', `Are you sure you want to delete "${savedTests[index].name}"?`, async () => {
+                    const testId = savedTests[index].id;
                     savedTests.splice(index, 1);
-                    saveTestsToStorage();
+                    await saveTestsToStorage();
+                    
+                    // Delete from backend
+                    if (window.apiService && testId) {
+                        try {
+                            await window.apiService.deleteTestFromBackend(testId);
+                        } catch (error) {
+                            console.error('Error deleting test from backend:', error);
+                        }
+                    }
+                    
                     displaySavedTests();
                     showAlert('success', 'Deleted', 'Test deleted successfully!');
                 });
@@ -147,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startSavedTest(index) {
         const test = savedTests[index];
         currentTest = test;
+        currentTestName = test.name;
         questions = [...test.questions];
         
         // Shuffle questions
@@ -404,6 +435,11 @@ document.addEventListener('DOMContentLoaded', () => {
         correctCount.textContent = `Correct: ${correct}`;
         incorrectCount.textContent = `Incorrect: ${total - correct}`;
         
+        // Track test completion in progress system
+        if (window.progressTracker && currentTestName) {
+            window.progressTracker.trackTestCompletion(currentTestName, correct, total);
+        }
+        
         // Show detailed results
         resultsDetails.innerHTML = '';
         testResults.forEach((result, index) => {
@@ -479,6 +515,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Initialize
-    loadSavedTests();
+    await loadSavedTests();
     addStartTestButton();
 });

@@ -649,14 +649,15 @@
 }
 
 .save-test-button {
-    background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
     color: white;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
 }
 
 .save-test-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 6px 20px rgba(52, 211, 153, 0.4);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
 .save-test-button:disabled {

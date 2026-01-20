@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tutoring Platform</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body>
@@ -132,7 +132,7 @@
                     <a href="materials.html" class="materials-tab">
                         <span>Materials</span>
                     </a>
-                    <a href="exercises.html" class="exercises-tab">
+                    <a href="exercises/exercises.html" class="exercises-tab">
                         <span>Exercises</span>
                     </a>
                     <a href="whiteboard.html" class="whiteboard-tab">
@@ -140,6 +140,12 @@
                     </a>
                     <a href="reference.html" class="reference-tab" id="referenceTab">
                         <span>Reference</span>
+                    </a>
+                    <a href="lessons.html" class="lessons-tab">
+                        <span>Lessons</span>
+                    </a>
+                    <a href="progress.html" class="progress-tab">
+                        <span>Dashboard</span>
                     </a>
                     <button class="theme-switcher" id="themeSwitcher" aria-label="Toggle theme">
                         <span class="theme-icon">🌙</span>
@@ -267,7 +273,8 @@
     <!-- Modern Alert Container -->
     <div id="alertContainer" class="alert-container"></div>
 
-    <script src="script.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/script.js"></script>
 </body>
 
 </html>

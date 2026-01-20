@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Whiteboard - Tutoring Platform</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="whiteboard.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/whiteboard.css">
 </head>
+
 <body data-theme="light">
     <!-- Animated Background Elements -->
     <div class="bg-animation" id="bgAnimation" data-animation="none">
@@ -108,8 +110,7 @@
             <h1 class="platform-title">Tutoring Platform</h1>
             <div class="header-controls">
                 <div class="animation-switcher-container">
-                    <button class="animation-switcher" id="animationSwitcher"
-                            aria-label="Change background animation">
+                    <button class="animation-switcher" id="animationSwitcher" aria-label="Change background animation">
                         <span class="animation-icon">🎬</span>
                     </button>
                     <div class="animation-menu" id="animationMenu">
@@ -133,6 +134,12 @@
                 <a href="reference.html" class="reference-tab">
                     <span>Reference</span>
                 </a>
+                <a href="lessons.html" class="lessons-tab">
+                    <span>Lessons</span>
+                </a>
+                <a href="progress.html" class="progress-tab">
+                    <span>Dashboard</span>
+                </a>
                 <button class="theme-switcher" id="themeSwitcher" aria-label="Toggle theme">
                     <span class="theme-icon">🌙</span>
                 </button>
@@ -142,12 +149,13 @@
         <!-- Main Content -->
         <main class="whiteboard-main">
             <h2 class="whiteboard-title">Virtual Whiteboard</h2>
-            
+
             <!-- Toolbar -->
             <div class="whiteboard-toolbar">
                 <div class="tool-group">
                     <label class="tool-label">Markers:</label>
-                    <button class="color-btn active" data-color="#000000" style="background: #000000;" title="Black"></button>
+                    <button class="color-btn active" data-color="#000000" style="background: #000000;"
+                        title="Black"></button>
                     <button class="color-btn" data-color="#FF0000" style="background: #FF0000;" title="Red"></button>
                     <button class="color-btn" data-color="#0000FF" style="background: #0000FF;" title="Blue"></button>
                     <button class="color-btn" data-color="#008000" style="background: #008000;" title="Green"></button>
@@ -156,7 +164,7 @@
                     <button class="color-btn" data-color="#FF1493" style="background: #FF1493;" title="Pink"></button>
                     <button class="color-btn" data-color="#000080" style="background: #000080;" title="Navy"></button>
                 </div>
-                
+
                 <div class="tool-group">
                     <label class="tool-label">Tools:</label>
                     <button class="tool-btn active" id="penTool" title="Marker">
@@ -166,13 +174,13 @@
                         <span>🧹</span> Eraser
                     </button>
                 </div>
-                
+
                 <div class="tool-group">
                     <label class="tool-label">Size:</label>
                     <input type="range" id="brushSize" min="2" max="20" value="5" class="size-slider">
                     <span id="sizeValue">5px</span>
                 </div>
-                
+
                 <div class="tool-group">
                     <button class="action-btn" id="clearBtn" title="Clear All">
                         <span>🗑️</span> Clear
@@ -197,7 +205,9 @@
     <!-- Modern Alert Container -->
     <div id="alertContainer" class="alert-container"></div>
 
-    <script src="script.js"></script>
-    <script src="whiteboard.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/whiteboard.js"></script>
 </body>
+
 </html>

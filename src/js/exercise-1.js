@@ -46,6 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 cards.push(card);
             }, index * 150); // 150ms delay between each card
         });
+        
+        // Track exercise completion
+        if (window.progressTracker) {
+            window.progressTracker.trackExerciseCompletion('word-cards');
+        }
     });
 
     // Handle Done button click for translations

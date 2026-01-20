@@ -416,9 +416,18 @@ document.getElementById('clearBtn').addEventListener('click', () => {
 });
 
 // Save function
-function saveToLocalStorage() {
+async function saveToLocalStorage() {
     const dataURL = canvas.toDataURL('image/png');
     localStorage.setItem('whiteboardDrawing', dataURL);
+    
+    // Sync to backend
+    if (window.apiService) {
+        try {
+            await window.apiService.saveWhiteboardToBackend(dataURL);
+        } catch (error) {
+            console.error('Error syncing whiteboard to backend:', error);
+        }
+    }
 }
 
 // Save button
@@ -567,8 +576,25 @@ function removeAlert(alert) {
 }
 
 // Load saved drawing on page load
-window.addEventListener('load', () => {
-    const saved = localStorage.getItem('whiteboardDrawing');
+window.addEventListener('load', async () => {
+    // Try to load from backend first
+    let saved = null;
+    if (window.apiService) {
+        try {
+            saved = await window.apiService.getWhiteboardFromBackend();
+            if (saved) {
+                localStorage.setItem('whiteboardDrawing', saved);
+            }
+        } catch (error) {
+            console.error('Error loading whiteboard from backend:', error);
+        }
+    }
+    
+    // Fallback to localStorage
+    if (!saved) {
+        saved = localStorage.getItem('whiteboardDrawing');
+    }
+    
     if (saved) {
         const img = new Image();
         img.onload = () => {

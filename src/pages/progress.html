@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Tutoring Platform</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/progress.css">
+</head>
+
+<body data-theme="light">
+    <!-- Animated Background Elements -->
+    <div class="bg-animation" id="bgAnimation" data-animation="none">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="light light-yellow light-1"></div>
+        <div class="light light-pink light-2"></div>
+        <div class="light light-violet light-3"></div>
+        <div class="light light-white light-4"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="platform-title">Tutoring Platform</h1>
+            <div class="header-controls">
+                <div class="animation-switcher-container">
+                    <button class="animation-switcher" id="animationSwitcher" aria-label="Change background animation">
+                        <span class="animation-icon">🎬</span>
+                    </button>
+                    <div class="animation-menu" id="animationMenu">
+                        <button class="animation-option" data-animation="none">No Animation</button>
+                        <button class="animation-option" data-animation="lights">Lights</button>
+                        <button class="animation-option" data-animation="waves">Waves</button>
+                        <button class="animation-option" data-animation="gradient">Background Gradient</button>
+                        <button class="animation-option" data-animation="rabbits">Jumping Rabbits</button>
+                        <button class="animation-option" data-animation="boy">Running Boy</button>
+                    </div>
+                </div>
+                <a href="index.html" class="materials-tab">
+                    <span>Home</span>
+                </a>
+                <a href="materials.html" class="materials-tab">
+                    <span>Materials</span>
+                </a>
+                <a href="exercises.html" class="exercises-tab">
+                    <span>Exercises</span>
+                </a>
+                <a href="whiteboard.html" class="whiteboard-tab">
+                    <span>Whiteboard</span>
+                </a>
+                <a href="reference.html" class="reference-tab">
+                    <span>Reference</span>
+                </a>
+                <a href="progress.html" class="progress-tab active">
+                    <span>Dashboard</span>
+                </a>
+                <button class="theme-switcher" id="themeSwitcher" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content progress-main">
+            <h2 class="page-title">Dashboard</h2>
+
+            <!-- Overview Stats -->
+            <div class="progress-overview">
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-content">
+                        <h3 id="totalStudyTime">0h 0m</h3>
+                        <p>Total Study Time</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <h3 id="exercisesCompleted">0</h3>
+                        <p>Exercises Completed</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-content">
+                        <h3 id="testsCompleted">0</h3>
+                        <p>Tests Completed</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-content">
+                        <h3 id="averageScore">0%</h3>
+                        <p>Average Score</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Sections -->
+            <div class="progress-sections">
+                <!-- Exercise Progress -->
+                <section class="progress-section">
+                    <h3 class="section-title">📖 Exercise Progress</h3>
+                    <div class="exercise-progress-grid" id="exerciseProgressGrid">
+                        <!-- Dynamically populated -->
+                    </div>
+                </section>
+
+                <!-- Test Results -->
+                <section class="progress-section">
+                    <h3 class="section-title">📊 Test Results</h3>
+                    <div class="test-results-container" id="testResultsContainer">
+                        <!-- Dynamically populated -->
+                    </div>
+                </section>
+
+                <!-- Study Streak -->
+                <section class="progress-section">
+                    <h3 class="section-title">🔥 Study Streak</h3>
+                    <div class="streak-container">
+                        <div class="streak-display">
+                            <div class="streak-number" id="currentStreak">0</div>
+                            <div class="streak-label">Days in a row</div>
+                        </div>
+                        <div class="streak-calendar" id="streakCalendar">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Achievements -->
+                <section class="progress-section">
+                    <h3 class="section-title">🏆 Achievements</h3>
+                    <div class="achievements-grid" id="achievementsGrid">
+                        <!-- Dynamically populated -->
+                    </div>
+                </section>
+
+                <!-- Weekly Activity -->
+                <section class="progress-section">
+                    <h3 class="section-title">📈 Weekly Activity</h3>
+                    <div class="activity-chart" id="activityChart">
+                        <!-- Dynamically populated -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modern Alert Container -->
+    <div id="alertContainer" class="alert-container"></div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/progress.js"></script>
+</body>
+
+</html>

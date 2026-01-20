@@ -89,6 +89,21 @@ function removeAlert(alert) {
     }, 300);
 }
 
+// Initialize backend sync on page load
+window.addEventListener('load', async () => {
+    // Check if backend is available and load data
+    if (window.apiService) {
+        const isBackendAvailable = await window.apiService.checkBackendHealth();
+        if (isBackendAvailable) {
+            await window.apiService.loadFromBackend();
+            // Sync existing localStorage data to backend
+            setTimeout(() => {
+                window.apiService.syncToBackend();
+            }, 1000);
+        }
+    }
+});
+
 // Theme Management
 const themeSwitcher = document.getElementById('themeSwitcher');
 const themeIcon = themeSwitcher ? themeSwitcher.querySelector('.theme-icon') : null;
@@ -121,6 +136,11 @@ const currentAnimation = localStorage.getItem('backgroundAnimation') || 'none';
 bgAnimation.setAttribute('data-animation', currentAnimation);
 updateActiveAnimationOption(currentAnimation);
 
+// Sync animation preference to backend
+if (window.apiService) {
+    window.apiService.savePreferencesToBackend({ animation: currentAnimation });
+}
+
 animationSwitcher.addEventListener('click', (e) => {
     e.stopPropagation();
     animationMenu.classList.toggle('active');
@@ -134,12 +154,17 @@ document.addEventListener('click', (e) => {
 });
 
 animationOptions.forEach(option => {
-    option.addEventListener('click', () => {
+    option.addEventListener('click', async () => {
         const animation = option.getAttribute('data-animation');
         bgAnimation.setAttribute('data-animation', animation);
         localStorage.setItem('backgroundAnimation', animation);
         updateActiveAnimationOption(animation);
         animationMenu.classList.remove('active');
+        
+        // Sync to backend
+        if (window.apiService) {
+            await window.apiService.savePreferencesToBackend({ animation });
+        }
     });
 });
 
@@ -634,9 +659,15 @@ if (homepageTextarea && saveHomepageBtn && clearHomepageBtn) {
     }
     
     // Save button functionality
-    saveHomepageBtn.addEventListener('click', () => {
+    saveHomepageBtn.addEventListener('click', async () => {
         const content = homepageTextarea.value;
         localStorage.setItem('homepageContent', content);
+        
+        // Sync to backend
+        if (window.apiService) {
+            await window.apiService.saveHomeworkToBackend(content);
+        }
+        
         showAlert('success', 'Saved', 'Homepage content saved successfully!');
     });
     

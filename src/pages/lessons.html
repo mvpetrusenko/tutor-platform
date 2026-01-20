@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repeat It - Tutoring Platform</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="exercises.css">
+    <title>Lessons - Tutoring Platform</title>
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
+
 <body data-theme="light">
     <!-- Animated Background Elements -->
     <div class="bg-animation" id="bgAnimation" data-animation="none">
@@ -108,8 +109,7 @@
             <h1 class="platform-title">Tutoring Platform</h1>
             <div class="header-controls">
                 <div class="animation-switcher-container">
-                    <button class="animation-switcher" id="animationSwitcher"
-                            aria-label="Change background animation">
+                    <button class="animation-switcher" id="animationSwitcher" aria-label="Change background animation">
                         <span class="animation-icon">🎬</span>
                     </button>
                     <div class="animation-menu" id="animationMenu">
@@ -127,11 +127,20 @@
                 <a href="materials.html" class="materials-tab">
                     <span>Materials</span>
                 </a>
+                <a href="exercises.html" class="exercises-tab">
+                    <span>Exercises</span>
+                </a>
                 <a href="whiteboard.html" class="whiteboard-tab">
                     <span>Whiteboard</span>
                 </a>
                 <a href="reference.html" class="reference-tab">
                     <span>Reference</span>
+                </a>
+                <a href="lessons.html" class="lessons-tab">
+                    <span>Lessons</span>
+                </a>
+                <a href="progress.html" class="progress-tab">
+                    <span>Dashboard</span>
                 </a>
                 <button class="theme-switcher" id="themeSwitcher" aria-label="Toggle theme">
                     <span class="theme-icon">🌙</span>
@@ -140,26 +149,92 @@
         </header>
 
         <!-- Main Content -->
-        <main class="exercises-main">
-            <div class="exercise-header">
-                <a href="exercises.html" class="back-to-exercises">← Back to Exercises</a>
-                <h2 class="exercises-title">2. Repeat It</h2>
-                <p class="exercises-subtitle">Practice repetition and memorization exercises</p>
-            </div>
+        <main class="main-content">
+            <section class="upload-card upload-card-full" id="lessonBuilder">
+                <div class="upload-icon">📘</div>
+                <h2>Lesson Builder</h2>
+                <p class="upload-description">
+                    Build lessons from modular blocks: text, images, video, quizzes, vocabulary and input exercises.
+                </p>
 
-            <!-- Exercise Content -->
-            <div class="exercise-content-container">
-                <div class="exercise-content">
-                    <h3 class="exercise-content-title">Repeat It</h3>
-                    <p class="exercise-content-description">Exercise content will be implemented here</p>
+                <div class="lesson-editor-layout">
+                    <!-- Left: lesson list, block list, add buttons -->
+                    <div class="lesson-editor-sidebar">
+                        <div class="lesson-panel lesson-list-panel">
+                            <h3 class="lesson-subtitle">Lessons</h3>
+                            <div id="lessonList" class="lesson-block-list"></div>
+                            <button id="newLessonBtn" class="lesson-primary-btn">
+                                + New Lesson
+                            </button>
+                        </div>
+
+                        <div class="lesson-panel lesson-blocks-panel">
+                            <h3 class="lesson-subtitle">Blocks</h3>
+                            <div id="lessonBlockList" class="lesson-block-list"></div>
+
+                            <div class="lesson-toolbar">
+                                <button class="lesson-toolbar-btn" data-block-type="text">Text / Theory</button>
+                                <button class="lesson-toolbar-btn" data-block-type="image">Image</button>
+                                <button class="lesson-toolbar-btn" data-block-type="video">Video</button>
+                                <button class="lesson-toolbar-btn" data-block-type="quiz-single">Quiz</button>
+                                <button class="lesson-toolbar-btn" data-block-type="vocab">Vocabulary</button>
+                                <button class="lesson-toolbar-btn" data-block-type="input-gap">Input exercise</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Block editor + student preview -->
+                    <div class="lesson-editor-main">
+                        <div class="lesson-meta">
+                            <label>
+                                <span>Lesson title</span>
+                                <input id="lessonTitleInput" class="lesson-title-input" type="text" value="New Lesson">
+                            </label>
+                        </div>
+
+                        <div class="lesson-editor-main-inner">
+                            <div class="lesson-block-editor-container">
+                                <h3 class="lesson-subtitle">Block editor</h3>
+                                <div id="lessonBlockEditor" class="lesson-block-editor-empty">
+                                    Select a block from the left or add a new block.
+                                </div>
+                            </div>
+
+                            <div class="lesson-preview-container">
+                                <div class="lesson-preview-header">
+                                    <h3 class="lesson-subtitle">Student Preview</h3>
+                                    <a href="student-lessons.html" class="lesson-student-section-btn">
+                                        📚 View All Lessons
+                                    </a>
+                                    <div class="lesson-preview-progress-group">
+                                        <div class="lesson-progress-bar">
+                                            <div id="lessonPreviewProgressFill" class="lesson-progress-bar-fill"
+                                                style="width: 0%;"></div>
+                                        </div>
+                                        <span id="lessonPreviewProgressText" class="lesson-progress-label">0%
+                                            completed</span>
+                                    </div>
+                                </div>
+                                <div id="lessonPreview" class="lesson-preview"></div>
+                            </div>
+                        </div>
+
+                        <div class="lesson-actions">
+                            <button id="saveLessonBtn" class="homework-btn save-btn">💾 Save Lesson</button>
+                            <button id="clearLessonBtn" class="homework-btn clear-btn">🗑️ Clear Lesson</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </section>
         </main>
     </div>
 
     <!-- Modern Alert Container -->
     <div id="alertContainer" class="alert-container"></div>
 
-    <script src="script.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/lessons.js"></script>
 </body>
+
 </html>
