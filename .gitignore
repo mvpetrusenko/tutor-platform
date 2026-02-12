@@ -5,6 +5,9 @@ package-lock.json
 # Data files
 data/
 
+# Uploaded files
+uploads/
+
 # Environment variables
 .env
 

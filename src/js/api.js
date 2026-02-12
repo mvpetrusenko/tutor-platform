@@ -109,6 +109,35 @@ async function savePreferencesToBackend(preferences) {
     return await apiCall('/preferences', 'POST', preferences);
 }
 
+// ==================== PHOTOS API (FILE UPLOADS) ====================
+
+async function uploadPhotoToBackend({ file, userId, courseId }) {
+    try {
+        const formData = new FormData();
+        formData.append('photo', file);
+        formData.append('userId', userId);
+        formData.append('courseId', courseId);
+
+        const response = await fetch(`${API_BASE_URL}/upload-photo`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error(`API error: ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('API call failed (/upload-photo):', error);
+        return null;
+    }
+}
+
+async function getPhotosForCourseFromBackend(courseId) {
+    return await apiCall(`/photos/${encodeURIComponent(courseId)}`);
+}
+
 // ==================== SYNC FUNCTIONS ====================
 
 // Sync localStorage data to backend (called on page load)
@@ -285,6 +314,8 @@ if (typeof window !== 'undefined') {
         saveProgressToBackend,
         syncToBackend,
         loadFromBackend,
-        checkBackendHealth
+        checkBackendHealth,
+        uploadPhotoToBackend,
+        getPhotosForCourseFromBackend
     };
 }

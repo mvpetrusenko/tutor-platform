@@ -135,35 +135,46 @@ function removeAlert(alert) {
     }, 300);
 }
 
+// Default identifiers for photo uploads to the dedicated photos database
+const DEFAULT_PHOTO_USER_ID = 'default-user';
+const DEFAULT_PHOTO_COURSE_ID = 'default-course';
+
 // Handle photo upload
 document.getElementById('materialPhotoUpload').addEventListener('change', (e) => {
     const files = Array.from(e.target.files);
     files.forEach(file => {
         if (file.type.startsWith('image/')) {
             const reader = new FileReader();
-        reader.onload = async (event) => {
-            const material = {
-                id: Date.now() + Math.random(),
-                name: file.name,
-                data: event.target.result,
-                type: 'image',
-                date: new Date().toLocaleDateString()
-            };
-            materials.photos.push(material);
-            await saveMaterials();
-            
-            // Sync to backend
-            if (window.apiService) {
-                try {
-                    await window.apiService.saveMaterialToBackend('photos', material);
-                } catch (error) {
-                    console.error('Error syncing photo to backend:', error);
+            reader.onload = (event) => {
+                const material = {
+                    id: Date.now() + Math.random(),
+                    name: file.name,
+                    data: event.target.result,
+                    type: 'image',
+                    date: new Date().toLocaleDateString()
+                };
+
+                // Update in-memory and UI immediately
+                materials.photos.push(material);
+                displayMaterials();
+                showAlert('success', 'Saved', `Photo "${file.name}" uploaded and saved successfully!`);
+
+                // Persist to localStorage + backend asynchronously (no UI delay)
+                saveMaterials();
+
+                // Also upload original file to the dedicated photos database (fire-and-forget)
+                if (window.apiService && window.apiService.uploadPhotoToBackend) {
+                    window.apiService
+                        .uploadPhotoToBackend({
+                            file,
+                            userId: DEFAULT_PHOTO_USER_ID,
+                            courseId: DEFAULT_PHOTO_COURSE_ID
+                        })
+                        .catch(error => {
+                            console.error('Error uploading photo to photos database:', error);
+                        });
                 }
-            }
-            
-            displayMaterials();
-            showAlert('success', 'Saved', `Photo "${file.name}" uploaded and saved successfully!`);
-        };
+            };
             reader.readAsDataURL(file);
         }
     });
@@ -572,3 +583,10 @@ function selectExerciseForHomePage(exercise) {
 // Initialize display
 displayMaterials();
 displayExerciseTabs();
+
+// When backend data is loaded (e.g., opening page from a shared link),
+// reload materials from localStorage (now merged with backend) and re-render.
+window.addEventListener('backendDataLoaded', () => {
+    reloadMaterials();
+    displayMaterials();
+});

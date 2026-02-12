@@ -1,18 +1,25 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const fs = require('fs').promises;
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const multer = require('multer');
+
+const connectDB = require('./db');
+const Photo = require('./models/Photo');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
+const UPLOADS_DIR = path.join(__dirname, 'uploads');
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+// Increase limits so large txt/pdf/doc/docx/odt base64 payloads can be handled
+app.use(bodyParser.json({ limit: '200mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '200mb' }));
 
 // Ensure data directory exists
 async function ensureDataDir() {
@@ -20,6 +27,15 @@ async function ensureDataDir() {
         await fs.mkdir(DATA_DIR, { recursive: true });
     } catch (error) {
         console.error('Error creating data directory:', error);
+    }
+}
+
+// Ensure uploads directory exists
+async function ensureUploadsDir() {
+    try {
+        await fs.mkdir(UPLOADS_DIR, { recursive: true });
+    } catch (error) {
+        console.error('Error creating uploads directory:', error);
     }
 }
 
@@ -43,8 +59,43 @@ async function writeDataFile(filename, data) {
     await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf8');
 }
 
-// Initialize data directory on startup
+// Initialize data and uploads directories on startup
 ensureDataDir();
+ensureUploadsDir();
+
+// ==================== MULTER CONFIG (FILE UPLOADS) ====================
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, UPLOADS_DIR);
+    },
+    filename: (req, file, cb) => {
+        const safeOriginalName = file.originalname.replace(/\s+/g, '_');
+        const uniqueName = `${Date.now()}-${safeOriginalName}`;
+        cb(null, uniqueName);
+    },
+});
+
+// Only allow image files
+function imageFileFilter(req, file, cb) {
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedMimes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files are allowed (jpeg, png, gif, webp).'));
+    }
+}
+
+const upload = multer({
+    storage,
+    fileFilter: imageFileFilter,
+    limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB
+    },
+});
+
+// Serve uploaded files statically (optional)
+app.use('/uploads', express.static(UPLOADS_DIR));
 
 // ==================== MATERIALS API ====================
 
@@ -292,8 +343,94 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`API endpoints available at http://localhost:${PORT}/api`);
+// ==================== PHOTOS UPLOAD & QUERY API ====================
+
+/**
+ * POST /api/upload-photo
+ * Body: multipart/form-data
+ *   - photo: file
+ *   - userId: string
+ *   - courseId: string
+ */
+app.post('/api/upload-photo', upload.single('photo'), async (req, res) => {
+    try {
+        const { userId, courseId } = req.body;
+
+        if (!userId || !courseId) {
+            // If a file was saved but validation fails, remove it
+            if (req.file && req.file.path) {
+                try {
+                    await fs.unlink(req.file.path);
+                } catch (unlinkErr) {
+                    console.error('Error removing uploaded file after validation failure:', unlinkErr);
+                }
+            }
+            return res.status(400).json({
+                error: 'userId and courseId are required.',
+            });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({
+                error: 'No file uploaded. Field name must be "photo".',
+            });
+        }
+
+        const { filename } = req.file;
+
+        // Public URL path for the uploaded file (served from /uploads)
+        const filePath = `/uploads/${filename}`;
+
+        const photo = await Photo.create({
+            userId,
+            courseId,
+            filename,
+            filePath,
+            uploadDate: new Date(),
+        });
+
+        res.status(201).json({
+            message: 'Photo uploaded successfully.',
+            photo,
+        });
+    } catch (error) {
+        console.error('Error uploading photo:', error);
+        res.status(500).json({ error: 'Failed to upload photo' });
+    }
+});
+
+/**
+ * GET /api/photos/:courseId
+ * Returns all photos for a given courseId
+ */
+app.get('/api/photos/:courseId', async (req, res) => {
+    try {
+        const { courseId } = req.params;
+
+        if (!courseId) {
+            return res.status(400).json({ error: 'courseId is required.' });
+        }
+
+        const photos = await Photo.find({ courseId }).sort({ uploadDate: -1 });
+
+        res.json({
+            courseId,
+            count: photos.length,
+            photos,
+        });
+    } catch (error) {
+        console.error('Error fetching photos:', error);
+        res.status(500).json({ error: 'Failed to fetch photos' });
+    }
+});
+
+// Start server after connecting to MongoDB
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+        console.log(`API endpoints available at http://localhost:${PORT}/api`);
+    });
+}).catch((err) => {
+    console.error('Failed to start server due to MongoDB error:', err);
+    process.exit(1);
 });

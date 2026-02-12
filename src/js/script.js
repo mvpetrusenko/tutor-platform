@@ -96,6 +96,10 @@ window.addEventListener('load', async () => {
         const isBackendAvailable = await window.apiService.checkBackendHealth();
         if (isBackendAvailable) {
             await window.apiService.loadFromBackend();
+
+            // Notify pages (like materials) that backend data has been loaded
+            window.dispatchEvent(new Event('backendDataLoaded'));
+
             // Sync existing localStorage data to backend
             setTimeout(() => {
                 window.apiService.syncToBackend();
@@ -343,44 +347,64 @@ function downloadMaterial(material, type) {
             }
             return;
         } else {
-            // For other files, try to determine MIME type from extension
+            // For other files (txt, pdf, doc, docx, odt), prefer streaming via fetch on data URL
             const extension = filename.split('.').pop().toLowerCase();
             const mimeTypes = {
                 'pdf': 'application/pdf',
                 'doc': 'application/msword',
                 'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'odt': 'application/vnd.oasis.opendocument.text',
                 'txt': 'text/plain'
             };
-            const mimeType = mimeTypes[extension] || 'application/octet-stream';
-            
-            // Convert base64 data URL to blob
-            let base64Data = dataUrl;
-            if (dataUrl.includes(',')) {
-                base64Data = dataUrl.split(',')[1];
+            const fallbackMimeType = mimeTypes[extension] || 'application/octet-stream';
+
+            const triggerDownloadFromBlob = (blob) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                }, 100);
+            };
+
+            // If we have a data URL, use fetch to get a Blob (handles large files better)
+            if (typeof dataUrl === 'string' && dataUrl.startsWith('data:')) {
+                fetch(dataUrl)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        triggerDownloadFromBlob(blob);
+                    })
+                    .catch(err => {
+                        console.error('Error downloading via fetch, falling back to base64 decode:', err);
+                        try {
+                            let base64Data = dataUrl;
+                            if (dataUrl.includes(',')) {
+                                base64Data = dataUrl.split(',')[1];
+                            }
+                            
+                            const byteCharacters = atob(base64Data);
+                            const byteNumbers = new Array(byteCharacters.length);
+                            for (let i = 0; i < byteCharacters.length; i++) {
+                                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            const byteArray = new Uint8Array(byteNumbers);
+                            const blob = new Blob([byteArray], { type: fallbackMimeType });
+                            triggerDownloadFromBlob(blob);
+                        } catch (fallbackError) {
+                            console.error('Fallback base64 download failed:', fallbackError);
+                            showAlert('error', 'Error', 'Error downloading file. Please try again.');
+                        }
+                    });
+            } else {
+                // Not a data URL – treat as plain text content
+                const blob = new Blob([dataUrl || ''], { type: fallbackMimeType });
+                triggerDownloadFromBlob(blob);
             }
-            
-            const byteCharacters = atob(base64Data);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: mimeType });
-            
-            // Create download link
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            
-            // Clean up
-            setTimeout(() => {
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-            }, 100);
         }
     } catch (error) {
         console.error('Error downloading material:', error);
@@ -698,6 +722,20 @@ window.addEventListener('load', () => {
     });
 });
 
+// Keep home page in sync when selections change in other tabs/pages
+window.addEventListener('storage', (e) => {
+    if (!e.key) return;
+    if (e.key === 'selectedPhotos') {
+        displaySelectedMaterials('photos');
+    } else if (e.key === 'selectedTexts') {
+        displaySelectedMaterials('texts');
+    } else if (e.key === 'selectedExercises') {
+        displaySelectedMaterials('exercises');
+    } else if (e.key === 'selectedHomeworks') {
+        displaySelectedMaterials('homework');
+    }
+});
+
 // Get selected materials for a type
 function getSelectedMaterials(type) {
     const previewType = type === 'photos' ? 'photo' : type.slice(0, -1);
@@ -848,48 +886,47 @@ function displaySelectedMaterials(type) {
         preview.innerHTML = '';
         preview.style.display = 'none';
     } else if (type === 'texts') {
-        // Special handling for texts - overlay the entire section with book reader
+        // Full text preview (like Upload New) for the last selected text material
         const textCard = document.querySelector('.upload-right .upload-card');
         if (!textCard) {
             console.error('Text card not found!');
             return;
         }
-        
-        console.log('Displaying text materials. Selected count:', selected.length);
-        
-        // Get all elements to hide/show
+
+        // Elements to hide/show
         const uploadIcon = textCard.querySelector('.upload-icon');
         const uploadTitle = textCard.querySelector('h2');
         const uploadDescription = textCard.querySelector('.upload-description');
         const uploadButtons = textCard.querySelector('.upload-buttons');
-        
+
         if (selected.length === 0) {
-            // No texts selected - show normal content
+            // No texts selected - restore default UI
             preview.innerHTML = '';
             preview.style.display = '';
             if (uploadIcon) uploadIcon.style.display = '';
             if (uploadTitle) uploadTitle.style.display = '';
             if (uploadDescription) uploadDescription.style.display = '';
             if (uploadButtons) uploadButtons.style.display = '';
-            
-            // Remove any existing text overlay
+
             const existingOverlay = textCard.querySelector('.text-overlay');
             if (existingOverlay) existingOverlay.remove();
-            
             return;
         }
-        
-        // Hide normal content
+
+        // Use the most recently selected text
+        const material = selected[selected.length - 1];
+
+        // Hide default content
         if (uploadIcon) uploadIcon.style.display = 'none';
         if (uploadTitle) uploadTitle.style.display = 'none';
         if (uploadDescription) uploadDescription.style.display = 'none';
         if (uploadButtons) uploadButtons.style.display = 'none';
-        
-        // Remove existing overlay if any
+
+        // Remove any existing overlay
         const existingOverlay = textCard.querySelector('.text-overlay');
         if (existingOverlay) existingOverlay.remove();
-        
-        // Create text overlay that covers the entire card
+
+        // Build overlay container
         const textOverlay = document.createElement('div');
         textOverlay.className = 'text-overlay';
         textOverlay.style.cssText = `
@@ -909,11 +946,8 @@ function displaySelectedMaterials(type) {
             display: flex;
             flex-direction: column;
         `;
-        
-        // Get the first selected text
-        const material = selected[0];
-        
-        // Create header with delete button
+
+        // Header with filename and delete (unselect) button
         const header = document.createElement('div');
         header.style.cssText = `
             display: flex;
@@ -922,7 +956,7 @@ function displaySelectedMaterials(type) {
             padding: 16px 20px;
             border-bottom: 1px solid var(--glass-border);
         `;
-        
+
         const title = document.createElement('div');
         title.style.cssText = `
             font-size: 16px;
@@ -935,7 +969,7 @@ function displaySelectedMaterials(type) {
             margin-right: 12px;
         `;
         title.textContent = material.name;
-        
+
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'material-delete-btn';
         deleteBtn.innerHTML = '×';
@@ -956,25 +990,48 @@ function displaySelectedMaterials(type) {
             flex-shrink: 0;
             box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
         `;
-        deleteBtn.onmouseover = () => {
-            deleteBtn.style.transform = 'scale(1.1)';
-            deleteBtn.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.5)';
-        };
-        deleteBtn.onmouseout = () => {
-            deleteBtn.style.transform = 'scale(1)';
-            deleteBtn.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.3)';
-        };
         deleteBtn.onclick = (e) => {
             e.stopPropagation();
             const updated = selected.filter(item => item.id !== material.id);
             saveSelectedMaterials(type, updated);
             displaySelectedMaterials(type);
         };
-        
+
         header.appendChild(title);
-        header.appendChild(deleteBtn);
-        
-        // Create text reader content area
+
+        // Download button for text materials
+        const downloadBtn = document.createElement('button');
+        downloadBtn.innerHTML = '⬇️';
+        downloadBtn.title = 'Download';
+        downloadBtn.style.cssText = `
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            margin-right: 8px;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        `;
+        downloadBtn.onclick = (e) => {
+            e.stopPropagation();
+            downloadMaterial(material, 'texts');
+        };
+
+        const headerButtons = document.createElement('div');
+        headerButtons.style.cssText = 'display:flex; gap:16px; align-items:center;';
+        headerButtons.appendChild(downloadBtn);
+        headerButtons.appendChild(deleteBtn);
+
+        header.appendChild(headerButtons);
+
+        // Content area
         const textContent = document.createElement('div');
         textContent.className = 'text-reader-content';
         textContent.style.cssText = `
@@ -992,16 +1049,14 @@ function displaySelectedMaterials(type) {
             display: block;
             visibility: visible;
         `;
-        
-        // Decode text content from base64 data URL
+
+        // Render content depending on file type (txt / docx / pdf)
         try {
             let text = '';
             const fileName = material.name || '';
             const fileExtension = fileName.split('.').pop().toLowerCase();
-            
-            // Handle different file formats
+
             if (fileExtension === 'docx') {
-                // Use mammoth.js to convert .docx to HTML
                 if (typeof mammoth === 'undefined') {
                     textContent.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Document reader library not loaded. Please refresh the page.</p>';
                 } else {
@@ -1011,8 +1066,7 @@ function displaySelectedMaterials(type) {
                     textCard.style.position = 'relative';
                     textCard.style.minHeight = '400px';
                     textCard.appendChild(textOverlay);
-                    
-                    // Convert data URL to array buffer
+
                     if (material.data && material.data.startsWith('data:')) {
                         const commaIndex = material.data.indexOf(',');
                         if (commaIndex !== -1) {
@@ -1023,30 +1077,21 @@ function displaySelectedMaterials(type) {
                                 bytes[i] = binaryString.charCodeAt(i);
                             }
                             const arrayBuffer = bytes.buffer;
-                            
-                            mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
-                                .then(function(result) {
-                                    textContent.innerHTML = `
-                                        <div style="padding: 24px; font-size: 16px; line-height: 1.8; color: var(--text-primary);">
-                                            ${result.value}
-                                        </div>
-                                    `;
-                                    if (result.messages.length > 0) {
-                                        console.warn('Mammoth conversion messages:', result.messages);
-                                    }
-                                })
-                                .catch(function(error) {
-                                    console.error('Error converting .docx:', error);
-                                    textContent.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Error reading document: ${error.message}</p>`;
-                                });
+
+                            mammoth.convertToHtml({ arrayBuffer }).then(result => {
+                                textContent.innerHTML = `
+                                    <div style="padding: 24px; font-size: 16px; line-height: 1.8; color: var(--text-primary);">
+                                        ${result.value}
+                                    </div>
+                                `;
+                            }).catch(error => {
+                                console.error('Error converting .docx:', error);
+                                textContent.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Error reading document: ${error.message}</p>`;
+                            });
                         }
                     }
-                    preview.innerHTML = '';
-                    preview.style.display = 'none';
                 }
-                return;
             } else if (fileExtension === 'pdf') {
-                // Use pdf.js to extract text from PDF
                 if (typeof pdfjsLib === 'undefined') {
                     textContent.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">PDF reader library not loaded. Please refresh the page.</p>';
                 } else {
@@ -1056,11 +1101,9 @@ function displaySelectedMaterials(type) {
                     textCard.style.position = 'relative';
                     textCard.style.minHeight = '400px';
                     textCard.appendChild(textOverlay);
-                    
-                    // Set up PDF.js worker
+
                     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-                    
-                    // Convert data URL to Uint8Array
+
                     if (material.data && material.data.startsWith('data:')) {
                         const commaIndex = material.data.indexOf(',');
                         if (commaIndex !== -1) {
@@ -1070,239 +1113,125 @@ function displaySelectedMaterials(type) {
                             for (let i = 0; i < binaryString.length; i++) {
                                 bytes[i] = binaryString.charCodeAt(i);
                             }
-                            
-                            pdfjsLib.getDocument({ data: bytes }).promise
-                                .then(function(pdf) {
-                                    const numPages = pdf.numPages;
-                                    console.log('PDF loaded successfully. Total pages:', numPages);
-                                    
-                                    // Clear loading message
-                                    textContent.innerHTML = '';
-                                    textContent.style.display = 'flex';
-                                    textContent.style.flexDirection = 'column';
-                                    textContent.style.alignItems = 'center';
-                                    textContent.style.gap = '16px';
-                                    textContent.style.padding = '24px';
-                                    
-                                    // Get the container width for scaling
-                                    const containerWidth = textContent.clientWidth || 600;
-                                    const scale = Math.min(containerWidth / 612, 2); // 612 is standard PDF width in points
-                                    
-                                    // Render all pages
-                                    const renderPromises = [];
-                                    
-                                    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-                                        renderPromises.push(
-                                            pdf.getPage(pageNum).then(function(page) {
-                                                // Get viewport with scale
-                                                const viewport = page.getViewport({ scale: scale });
-                                                
-                                                // Create canvas for this page
-                                                const canvas = document.createElement('canvas');
-                                                const canvasContext = canvas.getContext('2d');
-                                                canvas.height = viewport.height;
-                                                canvas.width = viewport.width;
-                                                
-                                                // Create page container
-                                                const pageContainer = document.createElement('div');
-                                                pageContainer.style.cssText = `
-                                                    width: 100%;
-                                                    display: flex;
-                                                    justify-content: center;
-                                                    margin-bottom: 16px;
-                                                    padding: 8px;
-                                                    background: white;
-                                                    border-radius: 4px;
-                                                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                                                `;
-                                                
-                                                canvas.style.cssText = `
-                                                    max-width: 100%;
-                                                    height: auto;
-                                                    display: block;
-                                                `;
-                                                
-                                                pageContainer.appendChild(canvas);
-                                                
-                                                // Render the page
-                                                const renderContext = {
-                                                    canvasContext: canvasContext,
-                                                    viewport: viewport
-                                                };
-                                                
-                                                return page.render(renderContext).promise.then(function() {
-                                                    console.log(`Page ${pageNum} rendered successfully`);
-                                                    return { pageNum: pageNum, container: pageContainer };
-                                                });
-                                            })
-                                        );
-                                    }
-                                    
-                                    // Wait for all pages to render, then display them in order
-                                    Promise.all(renderPromises).then(function(pageContainers) {
-                                        // Sort by page number to ensure correct order
-                                        pageContainers.sort((a, b) => a.pageNum - b.pageNum);
-                                        
-                                        // Append all page containers
-                                        pageContainers.forEach(function(item) {
-                                            textContent.appendChild(item.container);
-                                        });
-                                        
-                                        console.log('PDF rendered successfully. Pages displayed:', pageContainers.length);
-                                    }).catch(function(error) {
-                                        console.error('Error rendering PDF pages:', error);
-                                        textContent.innerHTML = `
-                                            <div style="padding: 40px; text-align: center; color: var(--text-secondary);">
-                                                <p style="font-size: 16px; margin-bottom: 12px;">❌ Error Rendering PDF</p>
-                                                <p style="margin-bottom: 8px;">${error.message || 'Unknown error occurred'}</p>
-                                                <p style="font-size: 12px; margin-top: 16px; opacity: 0.7;">Please check the browser console for more details.</p>
-                                            </div>
-                                        `;
-                                    });
-                                })
-                                .catch(function(error) {
-                                    console.error('Error loading PDF:', error);
-                                    textContent.innerHTML = `
-                                        <div style="padding: 40px; text-align: center; color: var(--text-secondary);">
-                                            <p style="font-size: 16px; margin-bottom: 12px;">❌ Error Loading PDF</p>
-                                            <p style="margin-bottom: 8px;">${error.message || 'Unknown error occurred'}</p>
-                                            <p style="font-size: 12px; margin-top: 16px; opacity: 0.7;">Please check the browser console for more details.</p>
-                                        </div>
-                                    `;
+
+                            pdfjsLib.getDocument({ data: bytes }).promise.then(pdf => {
+                                const numPages = pdf.numPages;
+                                textContent.innerHTML = '';
+                                textContent.style.display = 'flex';
+                                textContent.style.flexDirection = 'column';
+                                textContent.style.alignItems = 'center';
+                                textContent.style.gap = '16px';
+                                textContent.style.padding = '24px';
+
+                                const renderPromises = [];
+                                const containerWidth = textContent.clientWidth || 600;
+                                const scale = Math.min(containerWidth / 612, 2);
+
+                                for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+                                    renderPromises.push(
+                                        pdf.getPage(pageNum).then(page => {
+                                            const viewport = page.getViewport({ scale });
+                                            const canvas = document.createElement('canvas');
+                                            const ctx = canvas.getContext('2d');
+                                            canvas.height = viewport.height;
+                                            canvas.width = viewport.width;
+
+                                            const pageContainer = document.createElement('div');
+                                            pageContainer.style.cssText = `
+                                                width: 100%;
+                                                display: flex;
+                                                justify-content: center;
+                                                margin-bottom: 16px;
+                                                padding: 8px;
+                                                background: white;
+                                                border-radius: 4px;
+                                                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                                            `;
+                                            canvas.style.cssText = 'max-width: 100%; height: auto; display: block;';
+                                            pageContainer.appendChild(canvas);
+
+                                            return page.render({ canvasContext: ctx, viewport }).promise.then(() => ({
+                                                pageNum,
+                                                container: pageContainer
+                                            }));
+                                        })
+                                    );
+                                }
+
+                                Promise.all(renderPromises).then(items => {
+                                    items.sort((a, b) => a.pageNum - b.pageNum);
+                                    items.forEach(item => textContent.appendChild(item.container));
+                                }).catch(error => {
+                                    console.error('Error rendering PDF pages:', error);
+                                    textContent.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Error rendering PDF.</p>`;
                                 });
+                            }).catch(error => {
+                                console.error('Error loading PDF:', error);
+                                textContent.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Error loading PDF.</p>`;
+                            });
                         }
                     }
-                    preview.innerHTML = '';
-                    preview.style.display = 'none';
                 }
-                return;
-            } else if (fileExtension !== 'txt') {
-                // For other formats (like .doc), show message
-                textContent.innerHTML = `
-                    <div style="padding: 40px; text-align: center; color: var(--text-secondary);">
-                        <p style="font-size: 18px; margin-bottom: 12px;">⚠️ Unsupported File Format</p>
-                        <p style="margin-bottom: 8px;">This file format (.${fileExtension}) is not supported for text display.</p>
-                        <p style="font-size: 14px; margin-top: 16px;">Supported formats: <strong>.txt, .docx, .pdf</strong></p>
-                    </div>
-                `;
-                textOverlay.appendChild(header);
-                textOverlay.appendChild(textContent);
-                textCard.style.position = 'relative';
-                textCard.style.minHeight = '400px';
-                textCard.appendChild(textOverlay);
-                preview.innerHTML = '';
-                preview.style.display = 'none';
-                return;
-            }
-            
-            if (material.data) {
-                const dataStr = material.data;
-                
-                // Check if it's a data URL (base64 encoded)
-                if (dataStr.startsWith('data:')) {
-                    // Extract base64 part after the comma
-                    const commaIndex = dataStr.indexOf(',');
-                    if (commaIndex !== -1 && commaIndex < dataStr.length - 1) {
-                        const base64Data = dataStr.substring(commaIndex + 1);
-                        try {
-                            // Decode base64 to bytes first
+            } else {
+                // Plain text or other formats -> show as paragraphs
+                if (material.data) {
+                    const dataStr = material.data;
+                    if (dataStr.startsWith('data:')) {
+                        const commaIndex = dataStr.indexOf(',');
+                        if (commaIndex !== -1 && commaIndex < dataStr.length - 1) {
+                            const base64Data = dataStr.substring(commaIndex + 1);
                             const binaryString = atob(base64Data);
-                            // Convert binary string to bytes
                             const bytes = new Uint8Array(binaryString.length);
                             for (let i = 0; i < binaryString.length; i++) {
                                 bytes[i] = binaryString.charCodeAt(i);
                             }
-                            // Decode bytes as UTF-8
                             try {
                                 const decoder = new TextDecoder('utf-8');
                                 text = decoder.decode(bytes);
-                            } catch (utf8Error) {
-                                // Fallback to simple atob if TextDecoder fails
+                            } catch {
                                 text = binaryString;
                             }
-                            console.log('Successfully decoded text file:', material.name, 'Length:', text.length);
-                        } catch (decodeError) {
-                            console.error('Error decoding base64:', decodeError);
-                            console.error('Material:', material);
-                            text = 'Error: Could not decode file content. The file might be corrupted or in an unsupported format.';
                         }
                     } else {
-                        console.error('Invalid data URL format - no comma found or empty data');
-                        text = 'Error: Invalid data URL format.';
+                        text = dataStr;
                     }
-                } else {
-                    // Might already be plain text (not base64) - sometimes stored directly
-                    text = dataStr;
-                    console.log('Using text data directly (not base64):', material.name);
                 }
-            } else {
-                console.warn('No data found in material:', material);
-                text = 'No content available.';
-            }
-            
-            // Format text content - preserve line breaks and paragraphs
-            if (!text || text.trim() === '') {
-                textContent.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">No text content found in this file.</p>';
-            } else {
-                // Split into lines and format as paragraphs
-                const lines = text.split(/\r?\n/);
-                let formattedText = '';
-                
-                lines.forEach((line, index) => {
-                    const trimmed = line.trim();
-                    if (trimmed === '') {
-                        // Empty line - add spacing
-                        formattedText += '<br>';
-                    } else {
-                        // Regular line - format as paragraph
-                        // Preserve original line including leading/trailing spaces if needed
-                        formattedText += `<p style="margin: 0 0 1em 0; text-align: justify; word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap;">${escapeHtml(line)}</p>`;
-                    }
-                });
-                
-                // Ensure we have content to display
-                if (formattedText) {
-                    textContent.innerHTML = formattedText;
-                    console.log('Text content formatted and set. Character count:', formattedText.length);
+
+                if (!text || text.trim() === '') {
+                    textContent.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">No text content found in this file.</p>';
                 } else {
-                    textContent.innerHTML = '<p style="color: var(--text-secondary);">No content available</p>';
+                    const lines = text.split(/\r?\n/);
+                    let formatted = '';
+                    lines.forEach(line => {
+                        const trimmed = line.trim();
+                        if (trimmed === '') {
+                            formatted += '<br>';
+                        } else {
+                            formatted += `<p style="margin: 0 0 1em 0; text-align: justify; word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap;">${escapeHtml(line)}</p>`;
+                        }
+                    });
+                    textContent.innerHTML = formatted;
                 }
             }
-            
-            // Ensure content is visible
-            textContent.style.display = 'block';
-            textContent.style.visibility = 'visible';
-            textContent.style.opacity = '1';
         } catch (error) {
             console.error('Error reading text content:', error);
-            console.error('Material data:', material);
-            textContent.innerHTML = `<p style="color: var(--text-secondary);">Error loading text content: ${error.message}</p>`;
-            textContent.style.display = 'block';
-            textContent.style.visibility = 'visible';
+            textContent.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Error loading text content.</p>`;
         }
-        
-        // Append elements to overlay
+
         textOverlay.appendChild(header);
         textOverlay.appendChild(textContent);
-        
-        // Ensure overlay is visible
+
         textOverlay.style.display = 'flex';
         textOverlay.style.visibility = 'visible';
-        
-        // Make sure the card is positioned relative and has min-height
+
         textCard.style.position = 'relative';
         textCard.style.minHeight = '400px';
         textCard.appendChild(textOverlay);
-        
-        // Clear the preview area
+
         preview.innerHTML = '';
         preview.style.display = 'none';
-        
-        // Ensure overlay is visible
-        console.log('Text overlay created and appended to card');
-        console.log('Material:', material.name, 'Data type:', typeof material.data, 'Data length:', material.data ? material.data.length : 0);
     } else if (type === 'exercises') {
-        // Special handling for exercises - show as tabs
+        // Special handling for exercises - show as tabs or full text viewer
         const exerciseCard = document.querySelector('.exercise-card');
         if (!exerciseCard) return;
         
@@ -1314,6 +1243,319 @@ function displaySelectedMaterials(type) {
         const uploadTitle = exerciseCard.querySelector('h2');
         const uploadDescription = exerciseCard.querySelector('.upload-description');
         const uploadButtons = exerciseCard.querySelector('.upload-buttons');
+
+        // If there is at least one uploaded exercise file (no url),
+        // show it as a full text viewer similar to the Choose Text section
+        const uploadedExercises = selected.filter(ex => !ex.url);
+        if (uploadedExercises.length > 0) {
+            const material = uploadedExercises[uploadedExercises.length - 1]; // show last selected
+
+            // Hide default content
+            if (uploadIcon) uploadIcon.style.display = 'none';
+            if (uploadTitle) uploadTitle.style.display = 'none';
+            if (uploadDescription) uploadDescription.style.display = 'none';
+            if (uploadButtons) uploadButtons.style.display = 'none';
+
+            // Remove any existing overlay
+            const existingOverlay = exerciseCard.querySelector('.exercise-text-overlay');
+            if (existingOverlay) existingOverlay.remove();
+
+            // Build overlay container
+            const textOverlay = document.createElement('div');
+            textOverlay.className = 'exercise-text-overlay';
+            textOverlay.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: 24px;
+                overflow: hidden;
+                z-index: 5;
+                background: var(--glass-bg);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                display: flex;
+                flex-direction: column;
+            `;
+
+            // Header with filename and delete (unselect) button
+            const header = document.createElement('div');
+            header.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 16px 20px;
+                border-bottom: 1px solid var(--glass-border);
+            `;
+
+            const title = document.createElement('div');
+            title.style.cssText = `
+                font-size: 16px;
+                font-weight: 600;
+                color: var(--text-primary);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                flex: 1;
+                margin-right: 12px;
+            `;
+            title.textContent = material.name;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'material-delete-btn';
+            deleteBtn.innerHTML = '×';
+            deleteBtn.style.cssText = `
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                color: white;
+                border: none;
+                cursor: pointer;
+                font-size: 20px;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                flex-shrink: 0;
+                box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+            `;
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                const updated = selected.filter(item => item.id !== material.id);
+                saveSelectedMaterials(type, updated);
+                displaySelectedMaterials(type);
+            };
+
+            // Download button for exercise materials
+            const downloadBtn = document.createElement('button');
+            downloadBtn.innerHTML = '⬇️';
+            downloadBtn.title = 'Download';
+            downloadBtn.style.cssText = `
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                color: white;
+                border: none;
+                cursor: pointer;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                margin-right: 8px;
+                box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+            `;
+            downloadBtn.onclick = (e) => {
+                e.stopPropagation();
+                downloadMaterial(material, 'exercises');
+            };
+
+            const headerButtons = document.createElement('div');
+            headerButtons.style.cssText = 'display:flex; gap:16px; align-items:center;';
+            headerButtons.appendChild(downloadBtn);
+            headerButtons.appendChild(deleteBtn);
+
+            header.appendChild(title);
+            header.appendChild(headerButtons);
+
+            // Content area
+            const textContent = document.createElement('div');
+            textContent.className = 'exercise-text-content';
+            textContent.style.cssText = `
+                flex: 1;
+                padding: 24px;
+                overflow-y: auto;
+                overflow-x: hidden;
+                font-size: 16px;
+                line-height: 1.8;
+                color: var(--text-primary);
+                font-family: 'Georgia', 'Times New Roman', serif;
+                background: rgba(255, 255, 255, 0.02);
+                min-height: 300px;
+                height: 100%;
+                display: block;
+                visibility: visible;
+            `;
+
+            try {
+                let text = '';
+                const fileName = material.name || '';
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+
+                if (fileExtension === 'docx') {
+                    if (typeof mammoth === 'undefined') {
+                        textContent.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Document reader library not loaded. Please refresh the page.</p>';
+                    } else {
+                        textContent.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Loading document...</p>';
+
+                        if (material.data && material.data.startsWith('data:')) {
+                            const commaIndex = material.data.indexOf(',');
+                            if (commaIndex !== -1) {
+                                const base64Data = material.data.substring(commaIndex + 1);
+                                const binaryString = atob(base64Data);
+                                const bytes = new Uint8Array(binaryString.length);
+                                for (let i = 0; i < binaryString.length; i++) {
+                                    bytes[i] = binaryString.charCodeAt(i);
+                                }
+                                const arrayBuffer = bytes.buffer;
+
+                                mammoth.convertToHtml({ arrayBuffer }).then(result => {
+                                    textContent.innerHTML = `
+                                        <div style="padding: 24px; font-size: 16px; line-height: 1.8; color: var(--text-primary);">
+                                            ${result.value}
+                                        </div>
+                                    `;
+                                }).catch(error => {
+                                    console.error('Error converting .docx:', error);
+                                    textContent.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Error reading document: ${error.message}</p>`;
+                                });
+                            }
+                        }
+                    }
+                } else if (fileExtension === 'pdf') {
+                    if (typeof pdfjsLib === 'undefined') {
+                        textContent.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">PDF reader library not loaded. Please refresh the page.</p>';
+                    } else {
+                        textContent.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Loading PDF...</p>';
+
+                        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+                        if (material.data && material.data.startsWith('data:')) {
+                            const commaIndex = material.data.indexOf(',');
+                            if (commaIndex !== -1) {
+                                const base64Data = material.data.substring(commaIndex + 1);
+                                const binaryString = atob(base64Data);
+                                const bytes = new Uint8Array(binaryString.length);
+                                for (let i = 0; i < binaryString.length; i++) {
+                                    bytes[i] = binaryString.charCodeAt(i);
+                                }
+
+                                pdfjsLib.getDocument({ data: bytes }).promise.then(pdf => {
+                                    const numPages = pdf.numPages;
+                                    textContent.innerHTML = '';
+                                    textContent.style.display = 'flex';
+                                    textContent.style.flexDirection = 'column';
+                                    textContent.style.alignItems = 'center';
+                                    textContent.style.gap = '16px';
+                                    textContent.style.padding = '24px';
+
+                                    const renderPromises = [];
+                                    const containerWidth = textContent.clientWidth || 600;
+                                    const scale = Math.min(containerWidth / 612, 2);
+
+                                    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+                                        renderPromises.push(
+                                            pdf.getPage(pageNum).then(page => {
+                                                const viewport = page.getViewport({ scale });
+                                                const canvas = document.createElement('canvas');
+                                                const ctx = canvas.getContext('2d');
+                                                canvas.height = viewport.height;
+                                                canvas.width = viewport.width;
+
+                                                const pageContainer = document.createElement('div');
+                                                pageContainer.style.cssText = `
+                                                    width: 100%;
+                                                    display: flex;
+                                                    justify-content: center;
+                                                    margin-bottom: 16px;
+                                                    padding: 8px;
+                                                    background: white;
+                                                    border-radius: 4px;
+                                                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                                                `;
+                                                canvas.style.cssText = 'max-width: 100%; height: auto; display: block;';
+                                                pageContainer.appendChild(canvas);
+
+                                                return page.render({ canvasContext: ctx, viewport }).promise.then(() => ({
+                                                    pageNum,
+                                                    container: pageContainer
+                                                }));
+                                            })
+                                        );
+                                    }
+
+                                    Promise.all(renderPromises).then(items => {
+                                        items.sort((a, b) => a.pageNum - b.pageNum);
+                                        items.forEach(item => textContent.appendChild(item.container));
+                                    }).catch(error => {
+                                        console.error('Error rendering PDF pages:', error);
+                                        textContent.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Error rendering PDF.</p>`;
+                                    });
+                                }).catch(error => {
+                                    console.error('Error loading PDF:', error);
+                                    textContent.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Error loading PDF.</p>`;
+                                });
+                            }
+                        }
+                    }
+                } else {
+                    // Plain text or other formats -> show as paragraphs
+                    if (material.data) {
+                        const dataStr = material.data;
+                        if (dataStr.startsWith('data:')) {
+                            const commaIndex = dataStr.indexOf(',');
+                            if (commaIndex !== -1 && commaIndex < dataStr.length - 1) {
+                                const base64Data = dataStr.substring(commaIndex + 1);
+                                const binaryString = atob(base64Data);
+                                const bytes = new Uint8Array(binaryString.length);
+                                for (let i = 0; i < binaryString.length; i++) {
+                                    bytes[i] = binaryString.charCodeAt(i);
+                                }
+                                try {
+                                    const decoder = new TextDecoder('utf-8');
+                                    text = decoder.decode(bytes);
+                                } catch {
+                                    text = binaryString;
+                                }
+                            }
+                        } else {
+                            text = dataStr;
+                        }
+                    }
+
+                    if (!text || text.trim() === '') {
+                        textContent.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">No text content found in this file.</p>';
+                    } else {
+                        const lines = text.split(/\r?\n/);
+                        let formatted = '';
+                        lines.forEach(line => {
+                            const trimmed = line.trim();
+                            if (trimmed === '') {
+                                formatted += '<br>';
+                            } else {
+                                formatted += `<p style="margin: 0 0 1em 0; text-align: justify; word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap;">${escapeHtml(line)}</p>`;
+                            }
+                        });
+                        textContent.innerHTML = formatted;
+                    }
+                }
+            } catch (error) {
+                console.error('Error reading exercise text content:', error);
+                textContent.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Error loading exercise text content.</p>`;
+            }
+
+            textOverlay.appendChild(header);
+            textOverlay.appendChild(textContent);
+
+            textOverlay.style.display = 'flex';
+            textOverlay.style.visibility = 'visible';
+
+            exerciseCard.style.position = 'relative';
+            exerciseCard.style.minHeight = '400px';
+            exerciseCard.appendChild(textOverlay);
+
+            // Hide regular preview
+            preview.innerHTML = '';
+            preview.style.display = 'none';
+
+            return;
+        }
         
         if (selected.length === 0) {
             // No exercises selected - show normal content
@@ -1325,6 +1567,10 @@ function displaySelectedMaterials(type) {
             if (uploadTitle) uploadTitle.style.display = '';
             if (uploadDescription) uploadDescription.style.display = '';
             if (uploadButtons) uploadButtons.style.display = '';
+
+            // Remove any existing exercise text overlay
+            const existingOverlay = exerciseCard.querySelector('.exercise-text-overlay');
+            if (existingOverlay) existingOverlay.remove();
             return;
         }
         
@@ -1597,7 +1843,7 @@ function handleFileUpload(type, file) {
     reader.onload = (event) => {
         const materials = getMaterials();
         const materialType = type === 'photo' ? 'photos' : type + 's';
-        
+
         const material = {
             id: Date.now() + Math.random(),
             name: file.name,
@@ -1608,15 +1854,53 @@ function handleFileUpload(type, file) {
         
         materials[materialType].push(material);
         localStorage.setItem(`materials${materialType.charAt(0).toUpperCase() + materialType.slice(1)}`, JSON.stringify(materials[materialType]));
-        
+
         // Add to selected materials
         const selected = getSelectedMaterials(materialType);
         if (!selected.find(item => item.id === material.id)) {
             selected.push(material);
             saveSelectedMaterials(materialType, selected);
         }
-        
+
+        // Persist photo and its selection to backend so it works across shared links
+        if (window.apiService) {
+            // Save the material itself to backend materials API
+            if (window.apiService.saveMaterialToBackend) {
+                window.apiService
+                    .saveMaterialToBackend(materialType, material)
+                    .catch(err => console.error('Error saving material to backend:', err));
+            }
+
+            // Save selected materials for this type to backend
+            if (window.apiService.saveSelectedMaterialsToBackend) {
+                window.apiService
+                    .saveSelectedMaterialsToBackend(materialType, selected)
+                    .catch(err => console.error('Error saving selected materials to backend:', err));
+            }
+        }
+
         displaySelectedMaterials(materialType);
+
+        // Alert user after saving on home page
+        if (type === 'photo' || type === 'text') {
+            const label = type === 'photo' ? 'Photo' : 'Text';
+            showAlert('success', 'Saved', `${label} "${file.name}" uploaded and selected successfully!`);
+        }
+
+        // Also upload original photo file to the dedicated photos database
+        if (type === 'photo' && window.apiService && window.apiService.uploadPhotoToBackend) {
+            const DEFAULT_PHOTO_USER_ID = 'default-user';
+            const DEFAULT_PHOTO_COURSE_ID = 'default-course';
+            try {
+                window.apiService.uploadPhotoToBackend({
+                    file,
+                    userId: DEFAULT_PHOTO_USER_ID,
+                    courseId: DEFAULT_PHOTO_COURSE_ID
+                });
+            } catch (error) {
+                console.error('Error uploading home page photo to photos database:', error);
+            }
+        }
     };
     
     if (type === 'photo' && file.type.startsWith('image/')) {
